@@ -7,15 +7,19 @@
         "build": "rsbuild build",
         "dev": "rsbuild dev  --port 3000",
         "preview": "rsbuild preview --port 3000",
-        "postinstall": "prisma generate"
+        "postinstall": "prisma generate",
+        "server": "tsx --watch src/server/main.ts"
     },
     "dependencies": {
         "@prisma/client": "6.19",
+        "@rsbuild/plugin-babel": "^1.1.1",
+        "babel-plugin-react-compiler": "^1.0.0",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
         "dotenv": "^17.3.1",
         "express": "^5.2.1",
         "lucide-react": "^0.575.0",
+        "motion": "^12.34.4",
         "radix-ui": "^1.4.3",
         "react": "^19.2.3",
         "react-dom": "^19.2.3",
@@ -34,6 +38,7 @@
         "@types/react-dom": "^19.2.3",
         "prisma": "^6.19.2",
         "tailwindcss": "^4.1.18",
+        "tsx": "^4.21.0",
         "typescript": "^5.9.3"
     }
 }

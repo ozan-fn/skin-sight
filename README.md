@@ -1,6 +1,6 @@
-# 🚀 Rsbuild + React + Express Template
+# 🔬 SkinSight
 
-A modern, high-performance full-stack template featuring **React 19**, **Express 5**, and build performance powered by **Rsbuild**. Optimized for seamless deployment on **Vercel**.
+A modern, clinical-grade health technology platform for skin analysis. Built with **React 19**, **Express 5**, and **Prisma**, powered by **Rsbuild** for extreme performance.
 
 ## ✨ Features
 
@@ -36,10 +36,13 @@ Ensure you have **Node.js 20+** and **npm/pnpm/yarn** installed.
 ### 2. Installation
 
 ```bash
-git clone https://github.com/ozan-fn/rsbuild-react-express-template.git
-cd rsbuild-react-express-template
+git clone https://github.com/ozan-fn/skin-sight.git
+cd skin-sight
+cp .env.example .env
 npm install
 ```
+
+Edit the `.env` file to add your database connection string and other secrets.
 
 ### 3. Development
 

@@ -6,11 +6,14 @@
     "scripts": {
         "build": "rsbuild build",
         "dev": "rsbuild dev  --port 3000",
-        "preview": "rsbuild preview --port 3000"
+        "preview": "rsbuild preview --port 3000",
+        "postinstall": "prisma generate"
     },
     "dependencies": {
+        "@prisma/client": "6.19",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
+        "dotenv": "^17.3.1",
         "express": "^5.2.1",
         "lucide-react": "^0.575.0",
         "radix-ui": "^1.4.3",
@@ -29,6 +32,7 @@
         "@types/node": "^25.3.3",
         "@types/react": "^19.2.7",
         "@types/react-dom": "^19.2.3",
+        "prisma": "^6.19.2",
         "tailwindcss": "^4.1.18",
         "typescript": "^5.9.3"
     }

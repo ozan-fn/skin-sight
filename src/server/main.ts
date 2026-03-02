@@ -1,11 +1,16 @@
-import express from "express"
+import "dotenv/config";
+import express from "express";
+import { PrismaClient } from "@prisma/client";
 
-const app = express()
+const app = express();
 
-app.use(express.json())
+const prisma = new PrismaClient();
 
-app.get("/api/hello", (_, res) => {
-  res.json({ message: "Hello from Express on Vercel 🚀" })
-})
+app.use(express.json());
 
-app.listen(3000, () => console.log("http://localhost:3000"))
+app.get("/api/hello", async (_, res) => {
+    const t = await prisma.user.findMany();
+    res.json(t);
+});
+
+app.listen(3001, () => console.log("http://localhost:3001"));

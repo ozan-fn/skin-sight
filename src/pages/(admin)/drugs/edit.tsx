@@ -208,7 +208,7 @@ export default function EditDrugPage() {
                 </main>
             </div>
 
-            <CropDialog image={tempImageUrl} open={isCropOpen} onClose={() => setIsCropOpen(false)} onCropComplete={handleCropComplete} />
+            <CropDialog image={tempImageUrl} open={isCropOpen} onClose={() => setIsCropOpen(false)} onCropComplete={handleCropComplete} aspectRatio={16 / 9} />
         </SidebarProvider>
     );
 }

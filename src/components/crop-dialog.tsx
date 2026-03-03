@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { Slider } from "./ui/slider";
 
-export function CropDialog({ image, open, onClose, onCropComplete }: any) {
+export function CropDialog({ image, open, onClose, onCropComplete, aspectRatio = 1 / 1 }: any) {
     const [crop, setCrop] = useState<Crop>();
     const [completedCrop, setCompletedCrop] = useState<PixelCrop>();
     const [scale, setScale] = useState(1);
@@ -13,7 +13,7 @@ export function CropDialog({ image, open, onClose, onCropComplete }: any) {
 
     const onImageLoad = (e: any) => {
         const { width, height } = e.currentTarget;
-        setCrop(centerCrop(makeAspectCrop({ unit: "%", width: 100 }, 16 / 9, width, height), width, height));
+        setCrop(centerCrop(makeAspectCrop({ unit: "%", width: 100 }, aspectRatio, width, height), width, height));
     };
 
     const handleConfirm = async () => {
@@ -33,12 +33,12 @@ export function CropDialog({ image, open, onClose, onCropComplete }: any) {
         <Dialog open={open} onOpenChange={onClose}>
             <DialogContent className="max-w-3xl p-0 overflow-hidden border-none shadow-2xl">
                 <DialogHeader className="p-4 border-b bg-background">
-                    <DialogTitle className="text-lg font-semibold">Sesuaikan Foto (16:9)</DialogTitle>
+                    <DialogTitle className="text-lg font-semibold">Sesuaikan Foto ({aspectRatio === 1 ? "1:1" : aspectRatio === 16 / 9 ? "16:9" : `${aspectRatio.toFixed(2)}`})</DialogTitle>
                 </DialogHeader>
 
                 <div className="bg-neutral-900 flex items-center justify-center p-8 min-h-[400px] max-h-[60vh] overflow-auto">
                     {image && (
-                        <ReactCrop crop={crop} onChange={(_, c) => setCrop(c)} onComplete={(c) => setCompletedCrop(c)} aspect={16 / 9}>
+                        <ReactCrop crop={crop} onChange={(_, c) => setCrop(c)} onComplete={(c) => setCompletedCrop(c)} aspect={aspectRatio}>
                             <img ref={imgRef} src={image} alt="Crop" onLoad={onImageLoad} style={{ transform: `scale(${scale})` }} className="max-w-full h-auto" />
                         </ReactCrop>
                     )}

@@ -150,18 +150,30 @@ export const updateProfile = async (req: any, res: Response): Promise<void> => {
         const { name, avatar } = req.body;
         const userId = req.user.userId;
 
+        const updateData: any = {};
+
+        if (name !== undefined && name !== null) {
+            updateData.name = name;
+        }
+        if (avatar !== undefined && avatar !== null) {
+            updateData.avatar = avatar;
+        }
+
+        if (Object.keys(updateData).length === 0) {
+            res.status(400).json({ message: "At least one field (name or avatar) is required to update" });
+            return;
+        }
+
         const user = await prisma.user.update({
             where: { id: userId },
-            data: {
-                ...(name && { name }),
-                ...(avatar && { avatar }),
-            },
+            data: updateData,
             select: {
                 id: true,
                 email: true,
                 name: true,
                 avatar: true,
                 free: true,
+                role: true,
                 updatedAt: true,
             },
         });

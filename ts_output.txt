@@ -1,0 +1,1 @@
+src/pages/(home)/ensiklopedia/index.tsx(2,10): error TS6133: 'BookOpen' is declared but its value is never read.

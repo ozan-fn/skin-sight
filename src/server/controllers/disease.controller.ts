@@ -64,12 +64,13 @@ export const getDiseaseBySlug = async (req: Request, res: Response): Promise<voi
 
 export const createDisease = async (req: Request, res: Response): Promise<void> => {
     try {
-        const { name, slug, content, drugIds } = req.body;
+        const { name, slug, content, image, drugIds } = req.body;
 
         const disease = await (prisma.disease as any).create({
             data: {
                 name,
                 slug: slug as string,
+                image: image as string,
                 content: content as string,
                 drugDiseases: {
                     create:
@@ -92,7 +93,7 @@ export const createDisease = async (req: Request, res: Response): Promise<void> 
 export const updateDisease = async (req: Request, res: Response): Promise<void> => {
     try {
         const { id } = req.params;
-        const { name, slug, content, drugIds } = req.body;
+        const { name, slug, content, image, drugIds } = req.body;
 
         // update disease and sync drug relationships
         const disease = await (prisma.disease as any).update({
@@ -100,6 +101,7 @@ export const updateDisease = async (req: Request, res: Response): Promise<void> 
             data: {
                 name,
                 slug: slug as string,
+                image: image as string,
                 content: content as string,
                 drugDiseases: drugIds
                     ? {

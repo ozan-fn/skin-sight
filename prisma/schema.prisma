@@ -14,23 +14,19 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model User {
-    id            String         @id @default(auto()) @map("_id") @db.ObjectId
-    email         String         @unique
-    name          String?
-    password      String // hashing needed
-    avatar        String?
-    free          Int            @default(5)
-    createdAt     DateTime       @default(now())
-    updatedAt     DateTime       @updatedAt
-    refreshTokens RefreshToken[]
+enum Role {
+    USER
+    ADMIN
 }
 
-model RefreshToken {
+model User {
     id        String   @id @default(auto()) @map("_id") @db.ObjectId
-    token     String   @unique
-    userId    String   @db.ObjectId
-    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    email     String   @unique
+    name      String?
+    password  String // hashing needed
+    avatar    String?
+    free      Int      @default(5)
+    role      Role     @default(USER)
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 }
@@ -50,6 +46,7 @@ model Disease {
     id        String   @id @default(auto()) @map("_id") @db.ObjectId
     name      String
     slug      String   @unique
+    image     String?
     content   String // markdown
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -61,6 +58,7 @@ model Drug {
     id        String   @id @default(auto()) @map("_id") @db.ObjectId
     name      String
     slug      String   @unique
+    image     String?
     content   String // markdown
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt

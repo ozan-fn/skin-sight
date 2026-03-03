@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import { BrowserRouter } from "react-router";
 import { ThemeProvider } from "@/components/theme-provider";
+import { AuthProvider } from "@/components/auth-provider";
 import "./styles.css";
 
 const rootEl = document.getElementById("root");
@@ -12,7 +13,9 @@ if (rootEl) {
         <React.StrictMode>
             <ThemeProvider defaultTheme="light" storageKey="sawit">
                 <BrowserRouter>
-                    <App />
+                    <AuthProvider>
+                        <App />
+                    </AuthProvider>
                 </BrowserRouter>
             </ThemeProvider>
         </React.StrictMode>,

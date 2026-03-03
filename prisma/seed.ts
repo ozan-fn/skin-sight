@@ -11,6 +11,7 @@ async function main() {
             email: "test@example.com",
             password: bcrypt.hashSync("password", 10),
             avatar: "https://i.ibb.co.com/nM0wnWd9/Sakayori-Iroha.jpg",
+            role: "ADMIN",
             free: 999,
         },
     });

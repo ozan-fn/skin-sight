@@ -59,22 +59,8 @@ export const login = async (req: Request, res: Response): Promise<void> => {
             return;
         }
 
-        const accessToken = jwt.sign({ userId: user.id, email: user.email }, ACCESS_TOKEN_SECRET, { expiresIn: "15m" });
-
-        const refreshToken = jwt.sign({ userId: user.id }, REFRESH_TOKEN_SECRET, { expiresIn: "7d" });
-
-        // Bersihkan token lama agar tidak menumpuk di DB
-        await prisma.refreshToken.deleteMany({
-            where: { userId: user.id },
-        });
-
-        // Save refresh token to DB
-        await prisma.refreshToken.create({
-            data: {
-                token: refreshToken,
-                userId: user.id,
-            },
-        });
+        const accessToken = jwt.sign({ userId: user.id, email: user.email, role: user.role }, ACCESS_TOKEN_SECRET, { expiresIn: "15m" });
+        const refreshToken = jwt.sign({ userId: user.id, email: user.email, role: user.role }, REFRESH_TOKEN_SECRET, { expiresIn: "7d" });
 
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
@@ -90,6 +76,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
                 email: user.email,
                 name: user.name,
                 avatar: user.avatar,
+                role: user.role,
             },
         });
     } catch (error) {
@@ -105,34 +92,13 @@ export const refresh = async (req: Request, res: Response): Promise<void> => {
     }
 
     try {
-        // Cari token di DB
-        const storedToken = await prisma.refreshToken.findUnique({
-            where: { token: oldRefreshToken },
-            include: { user: true },
-        });
+        // Verifikasi langsung tanpa kueri database (Stateless)
+        const decoded = jwt.verify(oldRefreshToken, REFRESH_TOKEN_SECRET) as any;
 
-        if (!storedToken) {
-            // Jika token valid JWT tapi tidak ada di DB, kemungkinan sudah di-reuse (serangan!)
-            // Opsional: Hapus semua refresh token user ini untuk keamanan extra
-            res.status(401).json({ message: "Invalid refresh token" });
-            return;
-        }
+        // Generate sepasang token baru (pastikan role dibawa)
+        const newAccessToken = jwt.sign({ userId: decoded.userId, email: decoded.email, role: decoded.role }, ACCESS_TOKEN_SECRET, { expiresIn: "15m" });
 
-        // Hapus token lama
-        await prisma.refreshToken.delete({ where: { id: storedToken.id } });
-
-        // Generate token baru
-        const newAccessToken = jwt.sign({ userId: storedToken.user.id, email: storedToken.user.email }, ACCESS_TOKEN_SECRET, { expiresIn: "15m" });
-
-        const newRefreshToken = jwt.sign({ userId: storedToken.user.id }, REFRESH_TOKEN_SECRET, { expiresIn: "7d" });
-
-        // Simpan token baru ke DB
-        await prisma.refreshToken.create({
-            data: {
-                token: newRefreshToken,
-                userId: storedToken.user.id,
-            },
-        });
+        const newRefreshToken = jwt.sign({ userId: decoded.userId, email: decoded.email, role: decoded.role }, REFRESH_TOKEN_SECRET, { expiresIn: "7d" });
 
         // Set cookie baru
         res.cookie("refreshToken", newRefreshToken, {
@@ -158,6 +124,7 @@ export const me = async (req: any, res: Response): Promise<void> => {
                 name: true,
                 avatar: true,
                 free: true,
+                role: true,
                 createdAt: true,
             },
         });
@@ -174,10 +141,6 @@ export const me = async (req: any, res: Response): Promise<void> => {
 };
 
 export const logout = async (req: Request, res: Response): Promise<void> => {
-    const refreshToken = req.cookies?.refreshToken;
-    if (refreshToken) {
-        await prisma.refreshToken.deleteMany({ where: { token: refreshToken } });
-    }
     res.clearCookie("refreshToken");
     res.json({ message: "Logged out successfully" });
 };

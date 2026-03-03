@@ -5,6 +5,9 @@ import { prisma } from "./lib/prisma.js";
 import authRoutes from "./routes/auth.routes.ts";
 import diseaseRoutes from "./routes/disease.routes.ts";
 import drugRoutes from "./routes/drug.routes.ts";
+import userRoutes from "./routes/user.routes.ts";
+import uploadRoutes from "./routes/upload.routes.ts";
+import statsRoutes from "./routes/stats.routes.ts";
 import { swaggerSpec } from "./lib/swagger.js";
 
 const app = express();
@@ -21,6 +24,10 @@ app.get("/api/docs-json", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/diseases", diseaseRoutes);
 app.use("/api/drugs", drugRoutes);
+
+app.use("/api/users", userRoutes);
+app.use("/api/upload", uploadRoutes);
+app.use("/api/stats", statsRoutes);
 
 app.get("/api/hello", async (_, res) => {
     const t = await prisma.user.findMany();

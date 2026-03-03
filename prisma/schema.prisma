@@ -35,41 +35,35 @@ model RefreshToken {
     updatedAt DateTime @updatedAt
 }
 
-model DrugDisease {
+model DiseaseDrug {
     id        String   @id @default(auto()) @map("_id") @db.ObjectId
-    drugId    String   @db.ObjectId
     diseaseId String   @db.ObjectId
+    drugId    String   @db.ObjectId
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    drug    Drug    @relation(fields: [drugId], references: [id])
     disease Disease @relation(fields: [diseaseId], references: [id])
-}
-
-model Drug {
-    id               String   @id @default(auto()) @map("_id") @db.ObjectId
-    name             String
-    slug             String   @unique
-    description      String // markdown
-    dosage           String?
-    sideEffects      String?
-    contraindication String?
-    createdAt        DateTime @default(now())
-    updatedAt        DateTime @updatedAt
-
-    drugDiseases DrugDisease[]
+    drug    Drug    @relation(fields: [drugId], references: [id])
 }
 
 model Disease {
-    id          String   @id @default(auto()) @map("_id") @db.ObjectId
-    name        String
-    slug        String   @unique
-    description String
-    symptoms    String?
-    causes      String?
-    prevention  String?
-    createdAt   DateTime @default(now())
-    updatedAt   DateTime @updatedAt
+    id        String   @id @default(auto()) @map("_id") @db.ObjectId
+    name      String
+    slug      String   @unique
+    content   String // markdown
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 
-    drugDiseases DrugDisease[]
+    drugDiseases DiseaseDrug[]
+}
+
+model Drug {
+    id        String   @id @default(auto()) @map("_id") @db.ObjectId
+    name      String
+    slug      String   @unique
+    content   String // markdown
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    drugDiseases DiseaseDrug[]
 }

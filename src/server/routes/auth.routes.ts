@@ -107,4 +107,29 @@ router.put("/update-profile", authMiddleware, authController.updateProfile);
  */
 router.post("/logout", authController.logout);
 
+/**
+ * @openapi
+ * /api/auth/update-password:
+ *   put:
+ *     summary: Update user password
+ *     tags: [Auth]
+ *     security: [{ bearerAuth: [] }]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [oldPassword, newPassword]
+ *             properties:
+ *               oldPassword: { type: string }
+ *               newPassword: { type: string }
+ *     responses:
+ *       200:
+ *         description: Password updated
+ *       401:
+ *         description: Invalid old password
+ */
+router.put("/update-password", authMiddleware, authController.updatePassword);
+
 export default router;

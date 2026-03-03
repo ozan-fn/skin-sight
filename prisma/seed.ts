@@ -1,13 +1,19 @@
 import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
 async function main() {
     await prisma.user.create({
         data: {
-            email: "test@gmail.com",
+            name: "example",
+            email: "test@example.com",
+            password: bcrypt.hashSync("password", 10),
+            avatar: "https://i.ibb.co.com/nM0wnWd9/Sakayori-Iroha.jpg",
+            free: 999,
         },
     });
 }
+
 main();

@@ -17,10 +17,6 @@
             "destination": "src/server/main.ts"
         },
         {
-            "source": "/docs/(.*)",
-            "destination": "src/server/main.ts"
-        },
-        {
             "source": "/(.*)",
             "destination": "/index.html"
         }

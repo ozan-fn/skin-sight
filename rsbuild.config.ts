@@ -26,7 +26,6 @@ export default defineConfig({
     server: {
         proxy: {
             "/api": "http://localhost:3001",
-            "/docs": "http://localhost:3001",
         },
     },
     tools: {

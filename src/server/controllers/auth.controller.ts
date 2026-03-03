@@ -156,6 +156,7 @@ export const me = async (req: any, res: Response): Promise<void> => {
                 id: true,
                 email: true,
                 name: true,
+                avatar: true,
                 free: true,
                 createdAt: true,
             },
@@ -205,5 +206,39 @@ export const updateProfile = async (req: any, res: Response): Promise<void> => {
         res.json({ message: "Profile updated successfully", user });
     } catch (error) {
         res.status(500).json({ message: "Error updating profile", error });
+    }
+};
+
+export const updatePassword = async (req: any, res: Response): Promise<void> => {
+    try {
+        const { oldPassword, newPassword } = req.body;
+        const userId = req.user.userId;
+
+        if (!oldPassword || !newPassword) {
+            res.status(400).json({ message: "Old and new password are required" });
+            return;
+        }
+
+        const user = await prisma.user.findUnique({ where: { id: userId } });
+        if (!user) {
+            res.status(404).json({ message: "User not found" });
+            return;
+        }
+
+        const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
+        if (!isPasswordValid) {
+            res.status(401).json({ message: "Invalid old password" });
+            return;
+        }
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        await prisma.user.update({
+            where: { id: userId },
+            data: { password: hashedPassword },
+        });
+
+        res.json({ message: "Password updated successfully" });
+    } catch (error) {
+        res.status(500).json({ message: "Error updating password", error });
     }
 };

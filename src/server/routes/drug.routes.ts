@@ -92,6 +92,7 @@ router.post("/", authMiddleware, drugController.createDrug);
  *         description: Drug updated
  */
 router.put("/:id", authMiddleware, drugController.updateDrug);
+router.patch("/:id", authMiddleware, drugController.updateDrug);
 
 /**
  * @openapi

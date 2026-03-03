@@ -3,7 +3,7 @@ import { SidebarProvider, SidebarTrigger } from "../../../components/ui/sidebar"
 import { AppSidebar } from "../../../components/app-sidebar";
 import api from "../../../lib/api";
 import { Button } from "../../../components/ui/button";
-import { ArrowLeft, Save, Upload, Loader2, X } from "lucide-react";
+import { ArrowLeft, Save, Upload, Loader2, X, Pill, Search, CheckCircle2 } from "lucide-react";
 import { Input } from "../../../components/ui/input";
 import { ModeToggle } from "../../../components/mode-toggle";
 import { Link, useNavigate, useParams } from "react-router";
@@ -11,6 +11,7 @@ import { MdEditor } from "md-editor-rt";
 import "md-editor-rt/lib/style.css";
 import { useTheme } from "../../../components/theme-provider";
 import { CropDialog } from "../../../components/crop-dialog";
+import { cn } from "@/lib/utils";
 
 export default function EditDiseasePage() {
     const { id } = useParams();
@@ -19,6 +20,12 @@ export default function EditDiseasePage() {
     const [isLoading, setIsLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
+
+    // Drug selection state
+    const [drugs, setDrugs] = useState<any[]>([]);
+    const [searchDrug, setSearchDrug] = useState("");
+    const [selectedDrugIds, setSelectedDrugIds] = useState<string[]>([]);
+    const [isLoadingDrugs, setIsLoadingDrugs] = useState(true);
 
     // Crop state
     const [tempImageUrl, setTempImageUrl] = useState<string | null>(null);
@@ -31,24 +38,14 @@ export default function EditDiseasePage() {
         content: "",
     });
 
-    const generateSlug = (name: string) => {
-        return name
-            .toLowerCase()
-            .replace(/[^\w ]+/g, "")
-            .replace(/ +/g, "-");
-    };
-
-    const handleNameChange = (name: string) => {
-        setFormData({
-            ...formData,
-            name,
-            slug: generateSlug(name),
-        });
-    };
-
     useEffect(() => {
-        const fetchDisease = async () => {
+        const fetchData = async () => {
             try {
+                // Fetch all drugs
+                const drugsRes = await api.get("/api/drugs?limit=100");
+                setDrugs(drugsRes.data.data);
+
+                // Fetch disease detail including drug relations
                 const res = await api.get(`/api/diseases`);
                 const disease = res.data.data.find((d: any) => d.id === id);
                 if (disease) {
@@ -58,15 +55,28 @@ export default function EditDiseasePage() {
                         image: disease.image || "",
                         content: disease.content || "",
                     });
+
+                    // Fetch accurate detail for relation from slug
+                    const detailRes = await api.get(`/api/diseases/${disease.slug}`);
+                    if (detailRes.data.drugDiseases) {
+                        setSelectedDrugIds(detailRes.data.drugDiseases.map((dd: any) => dd.drugId));
+                    }
                 }
             } catch (error) {
                 console.error("Gagal mengambil data", error);
             } finally {
                 setIsLoading(false);
+                setIsLoadingDrugs(false);
             }
         };
-        fetchDisease();
+        fetchData();
     }, [id]);
+
+    const filteredDrugs = drugs.filter((drug) => drug.name.toLowerCase().includes(searchDrug.toLowerCase()));
+
+    const toggleDrug = (id: string) => {
+        setSelectedDrugIds((prev) => (prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]));
+    };
 
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -123,7 +133,10 @@ export default function EditDiseasePage() {
         e.preventDefault();
         setIsSubmitting(true);
         try {
-            await api.patch(`/api/diseases/${id}`, formData);
+            await api.patch(`/api/diseases/${id}`, {
+                ...formData,
+                drugIds: selectedDrugIds,
+            });
             navigate("/admin/diseases");
         } catch (error) {
             alert("Gagal memperbarui data");
@@ -202,6 +215,62 @@ export default function EditDiseasePage() {
                                 <div className="rounded-2xl overflow-hidden border shadow-inner">
                                     <MdEditor modelValue={formData.content} onChange={(val) => setFormData({ ...formData, content: val })} onUploadImg={onUploadImg} theme={theme === "dark" ? "dark" : "light"} language="en-US" style={{ height: "500px" }} preview={true} />
                                 </div>
+                            </div>
+
+                            {/* Drug Selection Section */}
+                            <div className="space-y-4 pt-6 border-t">
+                                <div className="flex items-center justify-between">
+                                    <div className="space-y-1">
+                                        <label className="text-sm font-bold uppercase text-muted-foreground tracking-wider flex items-center gap-2">
+                                            <Pill className="h-4 w-4" /> Relasi Obat Terkait
+                                        </label>
+                                        <p className="text-xs text-muted-foreground">Pilih obat-obatan yang berhubungan dengan penyakit ini.</p>
+                                    </div>
+                                    <div className="relative w-64">
+                                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+                                        <Input placeholder="Cari obat..." value={searchDrug} onChange={(e) => setSearchDrug(e.target.value)} className="pl-9 h-9 text-xs rounded-full" />
+                                    </div>
+                                </div>
+
+                                {isLoadingDrugs ? (
+                                    <div className="flex items-center justify-center p-12 border-2 border-dashed rounded-3xl">
+                                        <Loader2 className="h-8 w-8 animate-spin text-primary/30" />
+                                    </div>
+                                ) : (
+                                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-h-[400px] overflow-y-auto p-1 pr-3 scrollbar-thin scrollbar-thumb-primary/10">
+                                        {filteredDrugs.length > 0 ? (
+                                            filteredDrugs.map((drug) => {
+                                                const isSelected = selectedDrugIds.includes(drug.id);
+                                                return (
+                                                    <div key={drug.id} onClick={() => toggleDrug(drug.id)} className={cn("group relative flex items-center gap-3 p-3 rounded-2xl border transition-all cursor-pointer hover:shadow-md", isSelected ? "bg-primary/5 border-primary shadow-sm" : "bg-card border-border hover:border-primary/50")}>
+                                                        <div className="h-10 w-10 shrink-0 rounded-xl bg-muted overflow-hidden border">
+                                                            {drug.image ? (
+                                                                <img src={drug.image} className="h-full w-full object-cover" />
+                                                            ) : (
+                                                                <div className="h-full w-full flex items-center justify-center">
+                                                                    <Pill className="h-4 w-4 text-muted-foreground" />
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                        <div className="flex-1 min-w-0">
+                                                            <p className={cn("text-xs font-bold truncate", isSelected ? "text-primary" : "text-foreground group-hover:text-primary transition-colors")}>{drug.name}</p>
+                                                            <p className="text-[10px] text-muted-foreground truncate uppercase tracking-tighter">{drug.slug}</p>
+                                                        </div>
+                                                        {isSelected && (
+                                                            <div className="absolute -top-2 -right-2 bg-primary text-white rounded-full p-0.5 shadow-lg border-2 border-background">
+                                                                <CheckCircle2 className="h-3 w-3" />
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                );
+                                            })
+                                        ) : (
+                                            <div className="col-span-full py-12 text-center border-2 border-dashed rounded-3xl">
+                                                <p className="text-sm text-muted-foreground">Obat tidak ditemukan.</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>

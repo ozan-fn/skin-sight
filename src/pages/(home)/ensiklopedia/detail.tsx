@@ -1,48 +1,24 @@
-import { useState, useEffect } from "react";
-import { useParams, Link, useNavigate } from "react-router";
+import { useEffect } from "react";
+import { useParams, Link } from "react-router";
 import { Activity, Pill, ArrowLeft, Clock, Shield, Share2, Loader2, ChevronRight } from "lucide-react";
 import { motion } from "motion/react";
-import api from "@/lib/api";
-import { cn } from "@/lib/utils";
-
-interface DetailItem {
-    id: string;
-    name: string;
-    slug: string;
-    content: string;
-    image?: string;
-    updatedAt: string;
-    // Relationships if any
-    drugDiseases?: any[];
-}
+import ReactMarkdown from "react-markdown";
+import { useEncyclopediaStore } from "@/stores/encyclopedia-store";
 
 export default function DetailPage() {
     const { type, slug } = useParams<{ type: string; slug: string }>();
-    const navigate = useNavigate();
-    const [loading, setLoading] = useState(true);
-    const [data, setData] = useState<DetailItem | null>(null);
+    const { details, loading, fetchDetail } = useEncyclopediaStore();
 
     const isPenyakit = type === "penyakit";
+    const data = details[`${type}-${slug}`];
 
     useEffect(() => {
-        const fetchDetail = async () => {
-            setLoading(true);
-            try {
-                const endpoint = isPenyakit ? `/api/diseases/${slug}` : `/api/drugs/${slug}`;
-                const response = await api.get(endpoint);
-                setData(response.data);
-            } catch (error) {
-                console.error("Error fetching detail:", error);
-                // navigate("/ensiklopedia");
-            } finally {
-                setLoading(false);
-            }
-        };
+        if (type && slug) {
+            fetchDetail(type, slug);
+        }
+    }, [type, slug, fetchDetail]);
 
-        if (slug) fetchDetail();
-    }, [slug, isPenyakit]);
-
-    if (loading) {
+    if (loading && !data) {
         return (
             <div className="min-h-screen flex items-center justify-center">
                 <Loader2 className="w-10 h-10 text-primary animate-spin" />
@@ -102,10 +78,12 @@ export default function DetailPage() {
                     </motion.div>
                 </div>
 
-                <div className="grid lg:grid-cols-3 gap-12">
+                <div className="grid lg:grid-cols-3 gap-12 items-start">
                     {/* Main Content */}
                     <div className="lg:col-span-2">
-                        <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-bold prose-p:leading-relaxed prose-img:rounded-3xl" dangerouslySetInnerHTML={{ __html: data.content }} />
+                        <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-bold prose-p:leading-relaxed prose-img:rounded-3xl">
+                            <ReactMarkdown>{data.content}</ReactMarkdown>
+                        </div>
 
                         {/* Social Share (Mockup) */}
                         <div className="mt-12 pt-8 border-t border-border flex items-center justify-between">
@@ -119,8 +97,36 @@ export default function DetailPage() {
                     </div>
 
                     {/* Sidebar / Related (Mockup) */}
-                    <div className="space-y-8">
-                        <div className="p-8 rounded-3xl border border-border bg-accent/30 sticky top-24">
+                    <div className="space-y-8 sticky top-24">
+                        {/* Related Items Section */}
+                        {data.drugDiseases && data.drugDiseases.length > 0 && (
+                            <div className="p-8 rounded-3xl border border-border bg-card shadow-sm">
+                                <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                                    {isPenyakit ? <Pill className="w-5 h-5 text-primary" /> : <Activity className="w-5 h-5 text-primary" />}
+                                    {isPenyakit ? "Obat Terkait" : "Penyakit Terkait"}
+                                </h3>
+                                <div className="space-y-3">
+                                    {data.drugDiseases.map((dd: any) => {
+                                        const related = isPenyakit ? dd.drug : dd.disease;
+                                        const targetType = isPenyakit ? "obat" : "penyakit";
+                                        return (
+                                            <Link key={related.id} to={`/ensiklopedia/${targetType}/${related.slug}`} className="group flex items-center gap-3 p-3 rounded-2xl border border-border hover:border-primary/50 hover:bg-primary/5 transition-all shadow-sm active:scale-95">
+                                                <div className="w-12 h-12 rounded-xl overflow-hidden bg-accent/30 shrink-0 border border-border">
+                                                    {related.image ? <img src={related.image} alt={related.name} className="w-full h-full object-cover transition-transform group-hover:scale-110" /> : <div className="w-full h-full flex items-center justify-center text-primary/20">{isPenyakit ? <Pill className="w-6 h-6" /> : <Activity className="w-6 h-6" />}</div>}
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="text-sm font-bold truncate group-hover:text-primary transition-colors">{related.name}</p>
+                                                    <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold">Klik untuk detail</p>
+                                                </div>
+                                                <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors group-hover:translate-x-1" />
+                                            </Link>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        )}
+
+                        <div className="p-8 rounded-3xl border border-border bg-accent/30">
                             <h3 className="text-xl font-bold mb-4">Informasi Penting</h3>
                             <p className="text-sm text-muted-foreground leading-relaxed mb-6">Informasi yang disajikan dalam ensiklopedia ini bersifat edukatif dan tidak menggantikan saran dari profesional medis atau dokter.</p>
                             <div className="space-y-4">

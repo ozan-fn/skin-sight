@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import api from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router";
+import ReactMarkdown from "react-markdown";
+import { useEncyclopediaStore } from "@/stores/encyclopedia-store";
 
 interface ContentItem {
     id: string;
@@ -18,27 +20,14 @@ interface ContentItem {
 export default function Ensiklopedia() {
     const [activeTab, setActiveTab] = useState<"penyakit" | "obat">("penyakit");
     const [searchQuery, setSearchQuery] = useState("");
-    const [loading, setLoading] = useState(true);
-    const [data, setData] = useState<ContentItem[]>([]);
+    const { fetchDetail, fetchList, listData, loading: storeLoading } = useEncyclopediaStore();
 
     useEffect(() => {
-        const fetchData = async () => {
-            setLoading(true);
-            try {
-                const endpoint = activeTab === "penyakit" ? "/api/diseases" : "/api/drugs";
-                const response = await api.get(endpoint);
-                setData(response.data.data);
-            } catch (error) {
-                console.error("Error fetching data:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
+        fetchList(activeTab);
+    }, [activeTab, fetchList]);
 
-        fetchData();
-    }, [activeTab]);
-
-    const filteredData = data.filter((item) => item.name.toLowerCase().includes(searchQuery.toLowerCase()) || item.content.toLowerCase().includes(searchQuery.toLowerCase()));
+    const currentData = listData[activeTab] || [];
+    const filteredData = currentData.filter((item) => item.name.toLowerCase().includes(searchQuery.toLowerCase()) || item.content.toLowerCase().includes(searchQuery.toLowerCase()));
 
     return (
         <div className="min-h-screen py-20">
@@ -74,7 +63,7 @@ export default function Ensiklopedia() {
 
                 <div className="min-h-[400px] relative">
                     <AnimatePresence mode="wait">
-                        {loading ? (
+                        {storeLoading && currentData.length === 0 ? (
                             <motion.div key="loader" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 flex items-center justify-center">
                                 <Loader2 className="w-8 h-8 text-primary animate-spin" />
                             </motion.div>
@@ -82,7 +71,7 @@ export default function Ensiklopedia() {
                             <motion.div key={activeTab} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {filteredData.length > 0 ? (
                                     filteredData.map((item) => (
-                                        <Link key={item.id} to={`/ensiklopedia/${activeTab}/${item.slug}`} className="group flex flex-col rounded-3xl border border-border bg-card overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer">
+                                        <Link key={item.id} to={`/ensiklopedia/${activeTab}/${item.slug}`} onMouseEnter={() => fetchDetail(activeTab, item.slug)} className="group flex flex-col rounded-3xl border border-border bg-card overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer">
                                             {/* Image Section */}
                                             <div className="relative aspect-16/10 overflow-hidden bg-accent/30">
                                                 {item.image ? <img src={item.image} alt={item.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" /> : <div className="w-full h-full flex items-center justify-center text-primary/20">{activeTab === "penyakit" ? <Activity className="w-16 h-16" /> : <Pill className="w-16 h-16" />}</div>}
@@ -94,7 +83,9 @@ export default function Ensiklopedia() {
                                             {/* Content Section */}
                                             <div className="p-6 flex flex-col flex-1">
                                                 <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors line-clamp-1">{item.name}</h3>
-                                                <div className="text-sm text-muted-foreground line-clamp-3 mb-6 flex-1 prose prose-sm dark:prose-invert" dangerouslySetInnerHTML={{ __html: item.content }} />
+                                                <div className="text-sm text-muted-foreground line-clamp-3 mb-6 flex-1 prose prose-sm dark:prose-invert prose-headings:m-0 prose-p:m-0">
+                                                    <ReactMarkdown>{item.content}</ReactMarkdown>
+                                                </div>
                                                 <div className="flex items-center justify-between pt-4 border-t border-border mt-auto">
                                                     <span className="text-sm font-semibold text-primary inline-flex items-center gap-1">
                                                         Baca Selengkapnya

@@ -22,11 +22,24 @@ export function CropDialog({ image, open, onClose, onCropComplete, aspectRatio =
         const img = imgRef.current;
         const scaleX = img.naturalWidth / img.width;
         const scaleY = img.naturalHeight / img.height;
-        canvas.width = completedCrop.width * scaleX;
-        canvas.height = completedCrop.height * scaleY;
+
+        // Tentukan batas lebar maksimal untuk mencegah ukuran file membengkak
+        const MAX_WIDTH = 1200;
+        let targetWidth = completedCrop.width * scaleX;
+        let targetHeight = completedCrop.height * scaleY;
+
+        if (targetWidth > MAX_WIDTH) {
+            const ratio = MAX_WIDTH / targetWidth;
+            targetWidth = MAX_WIDTH;
+            targetHeight = targetHeight * ratio;
+        }
+
+        canvas.width = targetWidth;
+        canvas.height = targetHeight;
+
         const ctx = canvas.getContext("2d");
-        ctx?.drawImage(img, completedCrop.x * scaleX, completedCrop.y * scaleY, completedCrop.width * scaleX, completedCrop.height * scaleY, 0, 0, canvas.width, canvas.height);
-        canvas.toBlob((blob) => blob && (onCropComplete(blob), onClose()), "image/jpeg", 0.9);
+        ctx?.drawImage(img, completedCrop.x * scaleX, completedCrop.y * scaleY, completedCrop.width * scaleX, completedCrop.height * scaleY, 0, 0, targetWidth, targetHeight);
+        canvas.toBlob((blob) => blob && (onCropComplete(blob), onClose()), "image/jpeg", 0.85);
     };
 
     return (

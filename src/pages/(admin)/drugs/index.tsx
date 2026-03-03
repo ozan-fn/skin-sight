@@ -94,63 +94,65 @@ export default function DrugListPage() {
                         </div>
 
                         <div className="bg-card rounded-2xl border shadow-xl overflow-hidden">
-                            <Table>
-                                <TableHeader className="bg-muted/50">
-                                    <TableRow>
-                                        <TableHead className="w-[100px]">Gambar</TableHead>
-                                        <TableHead>Nama Obat</TableHead>
-                                        <TableHead>Slug</TableHead>
-                                        <TableHead>Dibuat Pada</TableHead>
-                                        <TableHead className="text-right">Aksi</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {loading ? (
+                            <div className="overflow-x-auto">
+                                <Table>
+                                    <TableHeader className="bg-muted/50">
                                         <TableRow>
-                                            <TableCell colSpan={5} className="text-center py-10 text-muted-foreground">
-                                                Memuat data...
-                                            </TableCell>
+                                            <TableHead className="w-[100px]">Gambar</TableHead>
+                                            <TableHead className="min-w-[200px]">Nama Obat</TableHead>
+                                            <TableHead className="min-w-[150px]">Slug</TableHead>
+                                            <TableHead className="w-[150px]">Dibuat Pada</TableHead>
+                                            <TableHead className="text-right w-[100px]">Aksi</TableHead>
                                         </TableRow>
-                                    ) : filteredDrugs.length === 0 ? (
-                                        <TableRow>
-                                            <TableCell colSpan={5} className="text-center py-10 text-muted-foreground">
-                                                Belum ada data obat.
-                                            </TableCell>
-                                        </TableRow>
-                                    ) : (
-                                        filteredDrugs.map((drug) => (
-                                            <TableRow key={drug.id} className="hover:bg-muted/30 transition-colors">
-                                                <TableCell>
-                                                    <div className="h-12 w-12 rounded-lg overflow-hidden border bg-muted flex items-center justify-center">{drug.image ? <img src={drug.image} alt={drug.name} className="h-full w-full object-cover" /> : <span className="text-[10px] text-muted-foreground">No Icon</span>}</div>
-                                                </TableCell>
-                                                <TableCell className="font-semibold">{drug.name}</TableCell>
-                                                <TableCell className="text-xs font-mono">{drug.slug}</TableCell>
-                                                <TableCell className="text-xs text-muted-foreground">{new Date(drug.createdAt).toLocaleDateString("id-ID")}</TableCell>
-                                                <TableCell className="text-right">
-                                                    <div className="flex justify-end gap-1">
-                                                        <Button variant="ghost" size="icon" asChild>
-                                                            <Link to={`/admin/drugs/edit/${drug.id}`}>
-                                                                <Pencil className="h-4 w-4" />
-                                                            </Link>
-                                                        </Button>
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="icon"
-                                                            className="text-destructive"
-                                                            onClick={() => {
-                                                                setSelectedDrug(drug);
-                                                                setIsDeleteDialogOpen(true);
-                                                            }}
-                                                        >
-                                                            <Trash2 className="h-4 w-4" />
-                                                        </Button>
-                                                    </div>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {loading ? (
+                                            <TableRow>
+                                                <TableCell colSpan={5} className="text-center py-10 text-muted-foreground">
+                                                    Memuat data...
                                                 </TableCell>
                                             </TableRow>
-                                        ))
-                                    )}
-                                </TableBody>
-                            </Table>
+                                        ) : filteredDrugs.length === 0 ? (
+                                            <TableRow>
+                                                <TableCell colSpan={5} className="text-center py-10 text-muted-foreground">
+                                                    Belum ada data obat.
+                                                </TableCell>
+                                            </TableRow>
+                                        ) : (
+                                            filteredDrugs.map((drug) => (
+                                                <TableRow key={drug.id} className="hover:bg-muted/30 transition-colors">
+                                                    <TableCell>
+                                                        <div className="h-12 w-12 rounded-lg overflow-hidden border bg-muted flex items-center justify-center">{drug.image ? <img src={drug.image} alt={drug.name} className="h-full w-full object-cover" /> : <span className="text-[10px] text-muted-foreground">No Icon</span>}</div>
+                                                    </TableCell>
+                                                    <TableCell className="font-semibold break-words max-w-[300px]">{drug.name}</TableCell>
+                                                    <TableCell className="text-xs font-mono break-all max-w-[200px]">{drug.slug}</TableCell>
+                                                    <TableCell className="text-xs text-muted-foreground whitespace-nowrap">{new Date(drug.createdAt).toLocaleDateString("id-ID")}</TableCell>
+                                                    <TableCell className="text-right">
+                                                        <div className="flex justify-end gap-1">
+                                                            <Button variant="ghost" size="icon" asChild>
+                                                                <Link to={`/admin/drugs/edit/${drug.id}`}>
+                                                                    <Pencil className="h-4 w-4" />
+                                                                </Link>
+                                                            </Button>
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="icon"
+                                                                className="text-destructive"
+                                                                onClick={() => {
+                                                                    setSelectedDrug(drug);
+                                                                    setIsDeleteDialogOpen(true);
+                                                                }}
+                                                            >
+                                                                <Trash2 className="h-4 w-4" />
+                                                            </Button>
+                                                        </div>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))
+                                        )}
+                                    </TableBody>
+                                </Table>
+                            </div>
                         </div>
                     </div>
                 </main>

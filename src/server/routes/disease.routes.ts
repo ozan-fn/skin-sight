@@ -92,6 +92,7 @@ router.post("/", authMiddleware, diseaseController.createDisease);
  *         description: Disease updated
  */
 router.put("/:id", authMiddleware, diseaseController.updateDisease);
+router.patch("/:id", authMiddleware, diseaseController.updateDisease);
 
 /**
  * @openapi

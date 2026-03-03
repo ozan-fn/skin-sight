@@ -1,14 +1,14 @@
 import "dotenv/config";
 import express from "express";
 import cookieParser from "cookie-parser";
-import { prisma } from "./lib/prisma";
-import authRoutes from "./routes/auth.routes";
-import diseaseRoutes from "./routes/disease.routes";
-import drugRoutes from "./routes/drug.routes";
-import userRoutes from "./routes/user.routes";
-import uploadRoutes from "./routes/upload.routes";
-import statsRoutes from "./routes/stats.routes";
-import { swaggerSpec } from "./lib/swagger";
+import { prisma } from "./lib/prisma.js";
+import authRoutes from "./routes/auth.routes.js";
+import diseaseRoutes from "./routes/disease.routes.js";
+import drugRoutes from "./routes/drug.routes.js";
+import userRoutes from "./routes/user.routes.js";
+import uploadRoutes from "./routes/upload.routes.js";
+import statsRoutes from "./routes/stats.routes.js";
+import { swaggerSpec } from "./lib/swagger.js";
 
 const app = express();
 
@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 // Swagger JSON Documentation
-app.get("/api/docs-json", (req, res) => {
+app.get("/api/docs-json", (_req, res) => {
     res.json(swaggerSpec);
 });
 

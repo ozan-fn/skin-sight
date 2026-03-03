@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { uploadLoader } from "../lib/cloudinary";
-import { authMiddleware } from "../middlewares/auth.middleware";
+import { uploadLoader } from "../lib/cloudinary.js";
+import { authMiddleware } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 

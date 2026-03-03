@@ -12,7 +12,7 @@ const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: {
         folder: "skinsight",
-        public_id: (req: any, file: any) => {
+        public_id: (req: any, _file: any) => {
             // Use slug from body if provided, else use original filename
             return req.body.slug || `upload-${Date.now()}`;
         },

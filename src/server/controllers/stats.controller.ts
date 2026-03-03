@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { prisma } from "../lib/prisma";
+import { prisma } from "../lib/prisma.js";
 
-export const getDashboardStats = async (req: Request, res: Response): Promise<void> => {
+export const getDashboardStats = async (_req: Request, res: Response): Promise<void> => {
     try {
         const [diseaseCount, drugCount, userCount, relationCount] = await Promise.all([prisma.disease.count(), prisma.drug.count(), prisma.user.count(), prisma.diseaseDrug.count()]);
 

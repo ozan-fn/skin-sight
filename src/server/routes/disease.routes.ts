@@ -1,6 +1,6 @@
 import { Router } from "express";
-import * as diseaseController from "../controllers/disease.controller";
-import { authMiddleware } from "../middlewares/auth.middleware";
+import * as diseaseController from "../controllers/disease.controller.js";
+import { authMiddleware } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 

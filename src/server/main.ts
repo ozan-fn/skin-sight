@@ -1,14 +1,14 @@
 import "dotenv/config";
 import express from "express";
 import cookieParser from "cookie-parser";
-import { prisma } from "./lib/prisma.js";
-import authRoutes from "./routes/auth.routes.ts";
-import diseaseRoutes from "./routes/disease.routes.ts";
-import drugRoutes from "./routes/drug.routes.ts";
-import userRoutes from "./routes/user.routes.ts";
-import uploadRoutes from "./routes/upload.routes.ts";
-import statsRoutes from "./routes/stats.routes.ts";
-import { swaggerSpec } from "./lib/swagger.js";
+import { prisma } from "./lib/prisma";
+import authRoutes from "./routes/auth.routes";
+import diseaseRoutes from "./routes/disease.routes";
+import drugRoutes from "./routes/drug.routes";
+import userRoutes from "./routes/user.routes";
+import uploadRoutes from "./routes/upload.routes";
+import statsRoutes from "./routes/stats.routes";
+import { swaggerSpec } from "./lib/swagger";
 
 const app = express();
 

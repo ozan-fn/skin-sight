@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 
 import { Home, Info, Activity } from "lucide-react";
+
 import { ModeToggle } from "./mode-toggle";
 import { Link, useLocation } from "react-router";
 

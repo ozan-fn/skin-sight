@@ -15,10 +15,22 @@ datasource db {
 }
 
 model User {
+    id            String         @id @default(auto()) @map("_id") @db.ObjectId
+    email         String         @unique
+    name          String?
+    password      String // hashing needed
+    avatar        String?
+    free          Int            @default(5)
+    createdAt     DateTime       @default(now())
+    updatedAt     DateTime       @updatedAt
+    refreshTokens RefreshToken[]
+}
+
+model RefreshToken {
     id        String   @id @default(auto()) @map("_id") @db.ObjectId
-    email     String   @unique
-    name      String?
-    free      Int      @default(0)
+    token     String   @unique
+    userId    String   @db.ObjectId
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 }

@@ -15,8 +15,6 @@ const App = () => {
                 <Route path="/tentang-kami" element={<TentangKami />} />
                 <Route path="/deteksi" element={<Deteksi />} />
             </Route>
-
-            {/*  */}
         </Routes>
     );
 };

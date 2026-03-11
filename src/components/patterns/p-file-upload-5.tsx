@@ -139,8 +139,8 @@ export function FileUpload({
     if (!simulateUpload) return;
 
     const interval = setInterval(() => {
-      setUploadFiles((prev) =>
-        prev.map((file) => {
+      setUploadFiles((prev) => {
+        const next = prev.map((file) => {
           if (file.status !== "uploading") return file;
 
           const increment = Math.random() * 15 + 5; // 5-20% increment
@@ -168,12 +168,14 @@ export function FileUpload({
             ...file,
             progress: newProgress,
           };
-        }),
-      );
+        });
+        onFilesChange?.(next as any);
+        return next;
+      });
     }, 500);
 
     return () => clearInterval(interval);
-  }, [simulateUpload]);
+  }, [simulateUpload, onFilesChange]);
 
   const retryUpload = (fileId: string) => {
     setUploadFiles((prev) =>
@@ -223,7 +225,7 @@ export function FileUpload({
       {/* Upload Area */}
       <div
         className={cn(
-          "rounded-lg relative border border-dashed p-8 text-center transition-colors",
+          "rounded-lg relative border border-dashed p-4 text-center transition-colors",
           isDragging
             ? "border-primary bg-primary/5"
             : "border-muted-foreground/25 hover:border-muted-foreground/50",

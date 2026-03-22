@@ -1,12 +1,12 @@
-import { useState, useEffect } from "react";
-import { Search, Activity, Pill, ChevronRight, Loader2 } from "lucide-react";
-import { motion, AnimatePresence } from "motion/react";
-import { Input } from "@/components/ui/input";
-import api from "@/lib/api";
-import { cn } from "@/lib/utils";
-import { Link } from "react-router";
-import ReactMarkdown from "react-markdown";
-import { useEncyclopediaStore } from "@/stores/encyclopedia-store";
+import { useState, useEffect } from 'react';
+import { Search, Activity, Pill, ChevronRight, Loader2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Input } from '@/components/ui/input';
+import api from '@/lib/api';
+import { cn } from '@/lib/utils';
+import { Link } from 'react-router';
+import ReactMarkdown from 'react-markdown';
+import { useEncyclopediaStore } from '@/stores/encyclopedia-store';
 
 interface ContentItem {
     id: string;
@@ -18,8 +18,8 @@ interface ContentItem {
 }
 
 export default function Ensiklopedia() {
-    const [activeTab, setActiveTab] = useState<"penyakit" | "obat">("penyakit");
-    const [searchQuery, setSearchQuery] = useState("");
+    const [activeTab, setActiveTab] = useState<'penyakit' | 'obat'>('penyakit');
+    const [searchQuery, setSearchQuery] = useState('');
     const { fetchDetail, fetchList, listData, loading: storeLoading } = useEncyclopediaStore();
 
     useEffect(() => {
@@ -30,7 +30,7 @@ export default function Ensiklopedia() {
     const filteredData = currentData.filter((item) => item.name.toLowerCase().includes(searchQuery.toLowerCase()) || item.content.toLowerCase().includes(searchQuery.toLowerCase()));
 
     return (
-        <div className="min-h-screen py-20">
+        <div className="flex-1 py-20">
             <div className="max-w-7xl mx-auto px-4">
                 <header className="mb-12 text-center">
                     <motion.h1 initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-4xl md:text-5xl font-bold text-foreground mb-4">
@@ -44,11 +44,11 @@ export default function Ensiklopedia() {
                 <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-8">
                     {/* Tabs */}
                     <div className="flex p-1 bg-accent/50 rounded-xl border border-border w-full md:w-auto">
-                        <button onClick={() => setActiveTab("penyakit")} className={cn("flex-1 md:flex-none px-6 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-2", activeTab === "penyakit" ? "bg-primary text-primary-foreground shadow-md" : "hover:bg-accent text-muted-foreground")}>
+                        <button onClick={() => setActiveTab('penyakit')} className={cn('flex-1 md:flex-none px-6 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-2', activeTab === 'penyakit' ? 'bg-primary text-primary-foreground shadow-md' : 'hover:bg-accent text-muted-foreground')}>
                             <Activity className="w-4 h-4" />
                             Penyakit
                         </button>
-                        <button onClick={() => setActiveTab("obat")} className={cn("flex-1 md:flex-none px-6 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-2", activeTab === "obat" ? "bg-primary text-primary-foreground shadow-md" : "hover:bg-accent text-muted-foreground")}>
+                        <button onClick={() => setActiveTab('obat')} className={cn('flex-1 md:flex-none px-6 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-2', activeTab === 'obat' ? 'bg-primary text-primary-foreground shadow-md' : 'hover:bg-accent text-muted-foreground')}>
                             <Pill className="w-4 h-4" />
                             Obat
                         </button>
@@ -57,7 +57,7 @@ export default function Ensiklopedia() {
                     {/* Search */}
                     <div className="relative w-full md:w-96">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                        <Input placeholder={`Cari ${activeTab === "penyakit" ? "penyakit" : "obat"}...`} className="pl-10 h-11 rounded-xl bg-background" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+                        <Input placeholder={`Cari ${activeTab === 'penyakit' ? 'penyakit' : 'obat'}...`} className="pl-10 h-11 rounded-xl bg-background" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
                     </div>
                 </div>
 
@@ -74,9 +74,9 @@ export default function Ensiklopedia() {
                                         <Link key={item.id} to={`/ensiklopedia/${activeTab}/${item.slug}`} onMouseEnter={() => fetchDetail(activeTab, item.slug)} className="group flex flex-col rounded-3xl border border-border bg-card overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer">
                                             {/* Image Section */}
                                             <div className="relative aspect-16/10 overflow-hidden bg-accent/30">
-                                                {item.image ? <img src={item.image} alt={item.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" /> : <div className="w-full h-full flex items-center justify-center text-primary/20">{activeTab === "penyakit" ? <Activity className="w-16 h-16" /> : <Pill className="w-16 h-16" />}</div>}
+                                                {item.image ? <img src={item.image} alt={item.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" /> : <div className="w-full h-full flex items-center justify-center text-primary/20">{activeTab === 'penyakit' ? <Activity className="w-16 h-16" /> : <Pill className="w-16 h-16" />}</div>}
                                                 <div className="absolute top-4 left-4">
-                                                    <div className="px-3 py-1 rounded-full bg-background/80 backdrop-blur-md border border-border text-[10px] font-bold uppercase tracking-wider text-primary">{activeTab === "penyakit" ? "Penyakit" : "Obat"}</div>
+                                                    <div className="px-3 py-1 rounded-full bg-background/80 backdrop-blur-md border border-border text-[10px] font-bold uppercase tracking-wider text-primary">{activeTab === 'penyakit' ? 'Penyakit' : 'Obat'}</div>
                                                 </div>
                                             </div>
 

@@ -29,6 +29,7 @@ model User {
     role      Role     @default(USER)
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+    chats     Chat[]
 }
 
 model DiseaseDrug {
@@ -52,6 +53,37 @@ model Disease {
     updatedAt DateTime @updatedAt
 
     drugDiseases DiseaseDrug[]
+}
+
+model GeminiApiKey {
+    id        String   @id @default(auto()) @map("_id") @db.ObjectId
+    key       String   @unique
+    active    Boolean  @default(true)
+    usage     Int      @default(0)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model Chat {
+    id        String    @id @default(auto()) @map("_id") @db.ObjectId
+    userId    String    @db.ObjectId
+    title     String?
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    messages  Message[]
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Message {
+    id        String   @id @default(auto()) @map("_id") @db.ObjectId
+    chatId    String   @db.ObjectId
+    role      String // "user" or "model"
+    content   String // text content
+    image     String? // optional image url
+    createdAt DateTime @default(now())
+
+    chat Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
 }
 
 model Drug {

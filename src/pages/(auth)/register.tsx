@@ -86,6 +86,28 @@ export default function Register() {
                     </Button>
                 </form>
 
+                <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                        <span className="w-full border-t" />
+                    </div>
+                    <div className="relative flex justify-center text-xs uppercase">
+                        <span className="bg-background px-2 text-muted-foreground">Atau pengujian</span>
+                    </div>
+                </div>
+
+                <Button variant="outline" className="w-full h-11 font-semibold" asChild>
+                    <Link
+                        to="/login"
+                        onClick={() => {
+                            // We can't easily pass state to Login to fill fields,
+                            // but since the button is already there in Login,
+                            // this just guides them back.
+                        }}
+                    >
+                        Gunakan Akun Demo (di hal Login)
+                    </Link>
+                </Button>
+
                 <p className="text-center text-sm text-muted-foreground">
                     Sudah punya akun?{" "}
                     <Link to="/login" className="font-semibold text-primary hover:underline underline-offset-4">

@@ -1,7 +1,7 @@
-import { LayoutDashboard, Users, Pill, Stethoscope, LogOut } from "lucide-react";
-import { useAuth } from "./auth-provider";
-import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "./ui/sidebar";
-import { Link, useLocation } from "react-router";
+import { LayoutDashboard, Users, Pill, Stethoscope, LogOut, Key } from 'lucide-react';
+import { useAuth } from './auth-provider';
+import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from './ui/sidebar';
+import { Link, useLocation } from 'react-router';
 
 export function AppSidebar() {
     const { logout, user } = useAuth();
@@ -23,7 +23,7 @@ export function AppSidebar() {
                     <SidebarGroupContent>
                         <SidebarMenu>
                             <SidebarMenuItem>
-                                <SidebarMenuButton asChild isActive={location.pathname === "/admin"}>
+                                <SidebarMenuButton asChild isActive={location.pathname === '/admin'}>
                                     <Link to="/admin">
                                         <LayoutDashboard className="h-4 w-4" />
                                         <span>Dashboard</span>
@@ -31,7 +31,7 @@ export function AppSidebar() {
                                 </SidebarMenuButton>
                             </SidebarMenuItem>
                             <SidebarMenuItem>
-                                <SidebarMenuButton asChild isActive={location.pathname.startsWith("/admin/diseases")}>
+                                <SidebarMenuButton asChild isActive={location.pathname.startsWith('/admin/diseases')}>
                                     <Link to="/admin/diseases">
                                         <Stethoscope className="h-4 w-4" />
                                         <span>Daftar Penyakit</span>
@@ -39,7 +39,7 @@ export function AppSidebar() {
                                 </SidebarMenuButton>
                             </SidebarMenuItem>
                             <SidebarMenuItem>
-                                <SidebarMenuButton asChild isActive={location.pathname.startsWith("/admin/drugs")}>
+                                <SidebarMenuButton asChild isActive={location.pathname.startsWith('/admin/drugs')}>
                                     <Link to="/admin/drugs">
                                         <Pill className="h-4 w-4" />
                                         <span>Daftar Obat</span>
@@ -55,10 +55,18 @@ export function AppSidebar() {
                     <SidebarGroupContent>
                         <SidebarMenu>
                             <SidebarMenuItem>
-                                <SidebarMenuButton asChild isActive={location.pathname === "/admin/users"}>
+                                <SidebarMenuButton asChild isActive={location.pathname === '/admin/users'}>
                                     <Link to="/admin/users">
                                         <Users className="h-4 w-4" />
                                         <span>Pengguna</span>
+                                    </Link>
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+                            <SidebarMenuItem>
+                                <SidebarMenuButton asChild isActive={location.pathname === '/admin/apikeys'}>
+                                    <Link to="/admin/apikeys">
+                                        <Key className="h-4 w-4" />
+                                        <span>API Keys</span>
                                     </Link>
                                 </SidebarMenuButton>
                             </SidebarMenuItem>
@@ -68,7 +76,7 @@ export function AppSidebar() {
             </SidebarContent>
             <SidebarFooter className="p-4 border-t">
                 <div className="flex items-center gap-3">
-                    <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center font-bold text-xs">{user?.name?.[0] || "A"}</div>
+                    <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center font-bold text-xs">{user?.name?.[0] || 'A'}</div>
                     <div className="flex-1 overflow-hidden">
                         <p className="text-sm font-medium truncate">{user?.name}</p>
                         <p className="text-xs text-muted-foreground truncate">{user?.role}</p>

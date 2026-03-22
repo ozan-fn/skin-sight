@@ -2,13 +2,12 @@
     "name": "rsbuild-react-express-template",
     "version": "1.0.0",
     "private": true,
-    "type": "module",
     "scripts": {
         "build": "rsbuild build",
         "dev": "concurrently \"rsbuild dev  --port 3000\" \"npm run server\"",
         "preview": "rsbuild preview --port 3000",
         "postinstall": "prisma generate",
-        "server": "tsx --watch src/server/main.ts"
+        "server": "tsx --watch api/main.ts"
     },
     "dependencies": {
         "@prisma/client": "6.19",

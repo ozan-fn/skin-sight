@@ -1,15 +1,15 @@
 import { Router } from "express";
-import * as drugController from "../controllers/drug.controller.js";
-import { authMiddleware } from "../middlewares/auth.middleware.js";
+import * as diseaseController from "../controllers/disease.controller";
+import { authMiddleware } from "../middlewares/auth.middleware";
 
 const router = Router();
 
 /**
  * @openapi
- * /api/drugs:
+ * /api/diseases:
  *   get:
- *     summary: Get all drugs with pagination
- *     tags: [Drugs]
+ *     summary: Get all diseases with pagination
+ *     tags: [Diseases]
  *     parameters:
  *       - in: query
  *         name: page
@@ -19,16 +19,16 @@ const router = Router();
  *         schema: { type: integer, default: 10 }
  *     responses:
  *       200:
- *         description: List of drugs
+ *         description: List of diseases
  */
-router.get("/", drugController.getAllDrugs);
+router.get("/", diseaseController.getAllDiseases);
 
 /**
  * @openapi
- * /api/drugs/{slug}:
+ * /api/diseases/{slug}:
  *   get:
- *     summary: Get drug by slug
- *     tags: [Drugs]
+ *     summary: Get disease by slug
+ *     tags: [Diseases]
  *     parameters:
  *       - in: path
  *         name: slug
@@ -36,16 +36,16 @@ router.get("/", drugController.getAllDrugs);
  *         schema: { type: string }
  *     responses:
  *       200:
- *         description: Drug detail
+ *         description: Disease detail
  */
-router.get("/:slug", drugController.getDrugBySlug);
+router.get("/:slug", diseaseController.getDiseaseBySlug);
 
 /**
  * @openapi
- * /api/drugs:
+ * /api/diseases:
  *   post:
- *     summary: Create new drug
- *     tags: [Drugs]
+ *     summary: Create new disease
+ *     tags: [Diseases]
  *     security: [{ bearerAuth: [] }]
  *     requestBody:
  *       required: true
@@ -58,19 +58,19 @@ router.get("/:slug", drugController.getDrugBySlug);
  *               name: { type: string }
  *               slug: { type: string }
  *               content: { type: string }
- *               diseaseIds: { type: array, items: { type: string } }
+ *               drugIds: { type: array, items: { type: string } }
  *     responses:
  *       201:
- *         description: Drug created
+ *         description: Disease created
  */
-router.post("/", authMiddleware, drugController.createDrug);
+router.post("/", authMiddleware, diseaseController.createDisease);
 
 /**
  * @openapi
- * /api/drugs/{id}:
+ * /api/diseases/{id}:
  *   put:
- *     summary: Update drug
- *     tags: [Drugs]
+ *     summary: Update disease
+ *     tags: [Diseases]
  *     security: [{ bearerAuth: [] }]
  *     parameters:
  *       - in: path
@@ -86,20 +86,20 @@ router.post("/", authMiddleware, drugController.createDrug);
  *               name: { type: string }
  *               slug: { type: string }
  *               content: { type: string }
- *               diseaseIds: { type: array, items: { type: string } }
+ *               drugIds: { type: array, items: { type: string } }
  *     responses:
  *       200:
- *         description: Drug updated
+ *         description: Disease updated
  */
-router.put("/:id", authMiddleware, drugController.updateDrug);
-router.patch("/:id", authMiddleware, drugController.updateDrug);
+router.put("/:id", authMiddleware, diseaseController.updateDisease);
+router.patch("/:id", authMiddleware, diseaseController.updateDisease);
 
 /**
  * @openapi
- * /api/drugs/{id}:
+ * /api/diseases/{id}:
  *   delete:
- *     summary: Delete drug
- *     tags: [Drugs]
+ *     summary: Delete disease
+ *     tags: [Diseases]
  *     security: [{ bearerAuth: [] }]
  *     parameters:
  *       - in: path
@@ -108,8 +108,8 @@ router.patch("/:id", authMiddleware, drugController.updateDrug);
  *         schema: { type: string }
  *     responses:
  *       200:
- *         description: Drug deleted
+ *         description: Disease deleted
  */
-router.delete("/:id", authMiddleware, drugController.deleteDrug);
+router.delete("/:id", authMiddleware, diseaseController.deleteDisease);
 
 export default router;

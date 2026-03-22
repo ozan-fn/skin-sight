@@ -1,0 +1,26 @@
+{
+    "compilerOptions": {
+        /* Dasar Kompilasi */
+        "target": "ES2020" /* Versi JavaScript hasil output */,
+        "module": "commonjs" /* Standar modul untuk Node.js */,
+        "lib": ["ES2020"] /* Library yang tersedia di runtime */,
+        // "outDir": "./dist" /* Folder hasil kompilasi */,
+        "rootDir": "../api" /* Folder lokasi kode sumber */,
+
+        /* Strictness & Keamanan */
+        "strict": true /* Mengaktifkan pengecekan tipe yang ketat */,
+        "noImplicitAny": true /* Melarang penggunaan 'any' secara implisit */,
+        "strictPropertyInitialization": false /* Sering dimatikan agar kompatibel dengan class Prisma/Express */,
+
+        /* Interoperabilitas Pihak Ketiga */
+        "esModuleInterop": true /* Memungkinkan import modul CommonJS seperti ES Modules */,
+        "skipLibCheck": true /* Mempercepat kompilasi dengan melewatkan cek file .d.ts */,
+        "forceConsistentCasingInFileNames": true /* Memastikan case-sensitive pada file */,
+
+        /* Prisma & Metadata (Opsional tapi disarankan) */
+        "emitDecoratorMetadata": true /* Diperlukan jika menggunakan library berbasis dekorator */,
+        "experimentalDecorators": true /* Mengaktifkan fitur dekorator */,
+        "sourceMap": true /* Memudahkan debugging dengan memetakan dist ke src */
+    },
+    "include": ["../api/**/*"] /* File yang akan diproses */
+}

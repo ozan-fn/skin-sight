@@ -1,37 +1,37 @@
-"use client";
-import { Navbar, NavBody, NavItems, MobileNav, NavbarButton, MobileNavHeader, MobileNavToggle, MobileNavMenu } from "@/components/ui/resizable-navbar";
-import { SkinSightLogo } from "./logo";
-import { cn } from "@/lib/utils";
-import { useState } from "react";
+'use client';
+import { Navbar, NavBody, NavItems, MobileNav, NavbarButton, MobileNavHeader, MobileNavToggle, MobileNavMenu } from '@/components/ui/resizable-navbar';
+import { SkinSightLogo } from './logo';
+import { cn } from '@/lib/utils';
+import { useState } from 'react';
 
-import { Home, Info, Activity, BookOpen } from "lucide-react";
+import { Home, Info, Activity, BookOpen } from 'lucide-react';
 
-import { ModeToggle } from "./mode-toggle";
-import { Link, useLocation } from "react-router";
-import { useAuth } from "./auth-provider";
-import { LogOut, User as UserIcon } from "lucide-react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { ModeToggle } from './mode-toggle';
+import { Link, useLocation } from 'react-router';
+import { useAuth } from './auth-provider';
+import { LogOut, User as UserIcon } from 'lucide-react';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 export function NavbarDemo() {
     const navItems = [
         {
-            name: "Beranda",
-            link: "/",
+            name: 'Beranda',
+            link: '/',
             icon: <Home className="h-4 w-4" />,
         },
         {
-            name: "Tentang Kami",
-            link: "/tentang-kami",
+            name: 'Tentang Kami',
+            link: '/tentang-kami',
             icon: <Info className="h-4 w-4" />,
         },
         {
-            name: "Deteksi",
-            link: "/deteksi",
+            name: 'Deteksi',
+            link: '/deteksi',
             icon: <Activity className="h-4 w-4" />,
         },
         {
-            name: "Ensiklopedia",
-            link: "/ensiklopedia",
+            name: 'Ensiklopedia',
+            link: '/ensiklopedia',
             icon: <BookOpen className="h-4 w-4" />,
         },
     ];
@@ -43,10 +43,10 @@ export function NavbarDemo() {
     return (
         <Navbar className="top-0">
             {/* Desktop Navigation */}
-            <NavBody>
+            <NavBody className="gap-8">
                 <SkinSightLogo />
-                <NavItems items={navItems} />
-                <div className="flex items-center gap-4">
+                <NavItems items={navItems} className="gap-4" />
+                <div className="flex items-center gap-6">
                     <ModeToggle />
                     {user ? (
                         <DropdownMenu>
@@ -67,7 +67,7 @@ export function NavbarDemo() {
                                         <span>Profil Saya</span>
                                     </DropdownMenuItem>
                                 </Link>
-                                {user.role === "ADMIN" && (
+                                {user.role === 'ADMIN' && (
                                     <Link to="/admin">
                                         <DropdownMenuItem className="cursor-pointer">
                                             <Activity className="mr-2 h-4 w-4" />
@@ -104,10 +104,10 @@ export function NavbarDemo() {
 
                 <MobileNavMenu isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)}>
                     {navItems.map((item, idx) => {
-                        const isActive = location.pathname === item.link || (item.link !== "/" && location.hash === item.link);
+                        const isActive = location.pathname === item.link || (item.link !== '/' && location.hash === item.link);
 
                         return (
-                            <Link key={`mobile-link-${idx}`} to={item.link} onClick={() => setIsMobileMenuOpen(false)} className={cn("relative flex items-center gap-2 transition-colors", isActive ? "text-black dark:text-white" : "text-neutral-600 dark:text-neutral-300")}>
+                            <Link key={`mobile-link-${idx}`} to={item.link} onClick={() => setIsMobileMenuOpen(false)} className={cn('relative flex items-center gap-2 transition-colors', isActive ? 'text-black dark:text-white' : 'text-neutral-600 dark:text-neutral-300')}>
                                 {item?.icon || <></>}
                                 <span className="block">{item.name}</span>
                             </Link>
@@ -135,7 +135,7 @@ export function NavbarDemo() {
                                             Profil Saya
                                         </NavbarButton>
                                     </Link>
-                                    {user.role === "ADMIN" && (
+                                    {user.role === 'ADMIN' && (
                                         <Link to="/admin" onClick={() => setIsMobileMenuOpen(false)}>
                                             <NavbarButton variant="secondary" className="w-full justify-start">
                                                 <Activity className="mr-2 h-4 w-4" />

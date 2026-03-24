@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router';
-import { Sparkles, AlertCircle, Loader2, ArrowLeft, MoreVertical, ShieldCheck } from 'lucide-react';
+import { Sparkles, AlertCircle, Loader2, ArrowLeft, MoreVertical, ShieldCheck, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { ChatMessage, type Message, type ImageAttachment } from '@/components/chat/chat-message';
@@ -64,8 +64,19 @@ export default function ChatPage() {
     const [input, setInput] = useState('');
     const [pendingImages, setPendingImages] = useState<ImageAttachment[]>([]);
     const [isTyping, setIsTyping] = useState(false);
-    const [isInitializing, setIsInitializing] = useState(true);
+    const [isInitializing, setIsInitializing] = useState(false);
+    const [isStopping, setIsStopping] = useState(false);
+    const abortControllerRef = useRef<AbortController | null>(null);
     const scrollEndRef = useRef<HTMLDivElement>(null);
+
+    const stopGeneration = useCallback(() => {
+        if (abortControllerRef.current) {
+            abortControllerRef.current.abort();
+            abortControllerRef.current = null;
+            setIsTyping(false);
+            toast.info('Generasi pesan dihentikan');
+        }
+    }, []);
     const hasInitializedRef = useRef(false);
 
     const scrollToBottom = useCallback(() => {
@@ -119,11 +130,23 @@ export default function ChatPage() {
                     // 2. Convert first image to base64 if it exists for the API
                     let initialImageBase64 = null;
                     const firstImg = item.gambar?.[0]?.preview || item.gambar?.[0];
-                    if (firstImg && typeof firstImg === 'string' && firstImg.startsWith('blob:')) {
+                    if (firstImg && typeof firstImg === 'string') {
                         try {
-                            initialImageBase64 = await resizeImageAndBase64(firstImg);
+                            // If it's a blob, resize it. If it's a static path (example), fetch and convert it.
+                            if (firstImg.startsWith('blob:')) {
+                                initialImageBase64 = await resizeImageAndBase64(firstImg);
+                            } else {
+                                // For static paths (example images), fetch and convert to base64
+                                const response = await fetch(firstImg);
+                                const blob = await response.blob();
+                                const reader = new FileReader();
+                                initialImageBase64 = await new Promise((resolve) => {
+                                    reader.onloadend = () => resolve(reader.result as string);
+                                    reader.readAsDataURL(blob);
+                                });
+                            }
                         } catch (e) {
-                            console.error('Failed to resize initial image', e);
+                            console.error('Failed to process initial image', e);
                         }
                     }
 
@@ -146,6 +169,7 @@ export default function ChatPage() {
                         content: m.content,
                         timestamp: m.createdAt,
                         images: m.image ? [{ id: `img-${m.id}`, url: m.image, name: 'analysis-image.jpg' }] : undefined,
+                        isError: false,
                     }));
 
                     setMessages(formattedHistory);
@@ -182,6 +206,12 @@ export default function ChatPage() {
         const currentInput = input;
         const currentImages = [...pendingImages];
 
+        // Abort previous if any
+        if (abortControllerRef.current) {
+            abortControllerRef.current.abort();
+        }
+        abortControllerRef.current = new AbortController();
+
         // Optimistic UI Update
         const tempId = `user-${Date.now()}`;
         const userMsg: Message = {
@@ -210,24 +240,43 @@ export default function ChatPage() {
             }
 
             // Send to Gemini via backend
-            const response = await api.post(`/api/chats/${chatId}/continue`, {
-                message: currentInput,
-                image: imageBase64,
-            });
+            const response = await api.post(
+                `/api/chats/${chatId}/continue`,
+                {
+                    message: currentInput,
+                    image: imageBase64,
+                },
+                { signal: abortControllerRef.current.signal },
+            );
 
             const aiMsg: Message = {
                 id: `ai-${Date.now()}`,
                 role: 'ai',
                 content: response.data.content,
                 timestamp: new Date().toISOString(),
+                isError: false,
             };
 
             setMessages((prev) => [...prev, aiMsg]);
         } catch (error: any) {
+            if (error.name === 'CanceledError' || error.name === 'AbortError') {
+                console.log('Request aborted');
+                return;
+            }
+
+            const errorMsg: Message = {
+                id: `error-${Date.now()}`,
+                role: 'ai',
+                content: 'Maaf, terjadi kesalahan saat memproses permintaan Anda. Silakan coba lagi atau periksa koneksi internet Anda.',
+                timestamp: new Date().toISOString(),
+                isError: true,
+            };
+            setMessages((prev) => [...prev, errorMsg]);
             toast.error('Gagal mengirim pesan');
             console.error('Send Error:', error);
         } finally {
             setIsTyping(false);
+            abortControllerRef.current = null;
         }
     }, [input, pendingImages, chatId]);
 
@@ -253,41 +302,44 @@ export default function ChatPage() {
             {!authUser && <AuthOverlay />}
 
             {/* Sticky Header */}
-            <header className="fixed top-0 left-0 right-0 z-40 h-16 md:h-20 bg-background/80 backdrop-blur-xl border-b flex items-center justify-between px-4 md:px-8">
-                <div className="flex items-center gap-3 md:gap-4">
-                    <Button variant="ghost" size="icon" onClick={() => navigate('/deteksi')} className="rounded-full hover:bg-muted">
-                        <ArrowLeft className="size-5" />
-                    </Button>
-                    <Separator orientation="vertical" className="h-6 hidden md:block" />
-                    <div className="flex items-center gap-3">
-                        <div className="size-10 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20 shadow-inner">
-                            <Sparkles className="size-5 text-primary" />
-                        </div>
-                        <div>
-                            <div className="flex items-center gap-2">
-                                <h1 className="font-bold text-sm md:text-base tracking-tight">SkinSight AI</h1>
-                                <Badge variant="secondary" className="bg-emerald-500/10 text-emerald-600 border-none text-[10px] h-5 px-1.5 font-bold uppercase tracking-wider">
-                                    Online
-                                </Badge>
+            <header className="fixed top-0 left-0 right-0 z-40 h-14 md:h-16 bg-background/80 backdrop-blur-xl border-b flex items-center justify-center px-4">
+                <div className="w-full max-w-4xl flex items-center justify-between">
+                    <div className="flex items-center gap-2 md:gap-4">
+                        <Button variant="ghost" size="icon" onClick={() => navigate('/deteksi')} className="size-9 rounded-full hover:bg-muted shrink-0">
+                            <ArrowLeft className="size-4 md:size-5" />
+                        </Button>
+                        <Separator orientation="vertical" className="h-4 hidden md:block" />
+                        <div className="flex items-center gap-2.5">
+                            <div className="size-8 md:size-9 rounded-lg bg-primary/10 flex items-center justify-center border border-primary/20 shadow-inner shrink-0">
+                                <Sparkles className="size-4 text-primary" />
                             </div>
-                            <p className="text-[10px] md:text-xs text-muted-foreground font-medium">Asisten Analisis Dermatologi</p>
+                            <div className="min-w-0">
+                                <div className="flex items-center gap-2">
+                                    <h1 className="font-bold text-xs md:text-sm tracking-tight truncate">SkinSight AI</h1>
+                                    <div className="flex items-center gap-1 bg-emerald-500/10 text-emerald-600 px-1.5 py-0.5 rounded-full">
+                                        <div className="size-1 bg-emerald-500 rounded-full animate-pulse" />
+                                        <span className="text-[9px] font-bold uppercase tracking-wider">Online</span>
+                                    </div>
+                                </div>
+                                <p className="text-[9px] md:text-[10px] text-muted-foreground font-medium truncate">Asisten Analisis Dermatologi</p>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div className="flex items-center gap-2">
-                    <Badge variant="outline" className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full border-muted-foreground/20 text-muted-foreground bg-background">
-                        <ShieldCheck className="size-3 text-emerald-500" />
-                        <span className="text-[10px] font-bold">Encrypted</span>
-                    </Badge>
-                    <Button variant="ghost" size="icon" className="rounded-full">
-                        <MoreVertical className="size-5 text-muted-foreground" />
-                    </Button>
+                    <div className="flex items-center gap-2">
+                        <Badge variant="outline" className="hidden sm:flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border-muted-foreground/20 text-muted-foreground bg-background">
+                            <ShieldCheck className="size-3 text-emerald-500" />
+                            <span className="text-[9px] font-bold uppercase tracking-tight">Encrypted</span>
+                        </Badge>
+                        <Button variant="ghost" size="icon" className="size-9 rounded-full shrink-0">
+                            <MoreVertical className="size-4 text-muted-foreground" />
+                        </Button>
+                    </div>
                 </div>
             </header>
 
             {/* Messages Scroll Area */}
-            <main className="flex-1 overflow-y-auto pt-20 pb-4 custom-scrollbar">
+            <main className="flex-1 overflow-y-auto pt-16 md:pt-20 pb-4 custom-scrollbar">
                 <div className="mx-auto w-full max-w-4xl px-4 md:px-6">
                     {/* Welcome Banner */}
                     {!isInitializing && messages.length <= 2 && (
@@ -345,12 +397,20 @@ export default function ChatPage() {
                     </div>
 
                     {isTyping && (
-                        <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="flex items-center gap-3 pl-2">
-                            <div className="size-8 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20">
-                                <Sparkles className="size-4 text-primary animate-pulse" />
-                            </div>
-                            <TypingIndicator />
-                        </motion.div>
+                        <div className="space-y-4">
+                            <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="flex items-center gap-3 pl-2">
+                                <div className="size-8 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20">
+                                    <Sparkles className="size-4 text-primary animate-pulse" />
+                                </div>
+                                <TypingIndicator />
+                            </motion.div>
+                            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-center">
+                                <Button variant="outline" size="sm" onClick={stopGeneration} className="rounded-full bg-background/50 backdrop-blur-sm border-destructive/20 text-destructive hover:bg-destructive hover:text-destructive-foreground transition-all gap-2 px-4 shadow-sm">
+                                    <X className="size-3" />
+                                    <span className="text-[10px] font-bold uppercase tracking-wider">Stop Generation</span>
+                                </Button>
+                            </motion.div>
+                        </div>
                     )}
 
                     <div ref={scrollEndRef} className="h-32" />

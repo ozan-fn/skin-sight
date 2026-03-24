@@ -19,6 +19,7 @@ export interface Message {
     content: string;
     timestamp: string;
     images?: ImageAttachment[];
+    isError?: boolean;
 }
 
 interface ChatMessageProps {
@@ -56,10 +57,11 @@ export function ChatMessage({ message }: ChatMessageProps) {
 
                 {/* Text bubble with Markdown Support */}
                 {message.content && (
-                    <div className={cn('rounded-2xl px-4 py-2.5 text-sm leading-relaxed shadow-sm overflow-hidden', isUser ? 'bg-chat-bubble-user text-chat-foreground rounded-br-md' : 'bg-chat-bubble-ai text-chat-foreground rounded-bl-md border border-border/40')}>
+                    <div className={cn('rounded-2xl px-4 py-2.5 text-sm leading-relaxed shadow-sm overflow-hidden relative group', isUser ? 'bg-chat-bubble-user text-chat-foreground rounded-br-md' : 'bg-chat-bubble-ai text-chat-foreground rounded-bl-md border border-border/40', message.isError && 'bg-destructive/10 border-destructive/20 text-destructive')}>
                         <div
                             className={cn(
                                 'prose prose-sm dark:prose-invert max-w-none break-words',
+                                message.isError ? 'prose-p:text-destructive' : '',
                                 'prose-p:leading-relaxed prose-pre:bg-muted prose-pre:text-muted-foreground prose-pre:p-3 prose-pre:rounded-lg',
                                 'prose-strong:font-bold prose-headings:font-bold prose-headings:mb-2 prose-headings:mt-4 first:prose-headings:mt-0',
                                 'prose-ul:list-disc prose-ol:list-decimal prose-li:my-0.5',

@@ -12,9 +12,10 @@ interface InputGroupCustomProps {
     onTextChange: (val: string) => void;
     onSend: (files?: File[]) => void;
     isLoading?: boolean;
+    triggerFileUpload?: (ref: React.RefObject<HTMLInputElement>) => void;
 }
 
-export function InputGroupCustom({ textValue, onTextChange, onSend, isLoading }: InputGroupCustomProps) {
+export function InputGroupCustom({ textValue, onTextChange, onSend, isLoading, triggerFileUpload }: InputGroupCustomProps) {
     const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
     const [previews, setPreviews] = useState<string[]>([]);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -48,6 +49,11 @@ export function InputGroupCustom({ textValue, onTextChange, onSend, isLoading }:
         setSelectedFiles([]);
         setPreviews([]);
     };
+
+    // Expose the file input clicker if a parent needs it
+    if (triggerFileUpload) {
+        (triggerFileUpload as any).current = () => fileInputRef.current?.click();
+    }
 
     return (
         <div className="w-full max-w-2xl mx-auto space-y-2">

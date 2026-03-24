@@ -233,6 +233,7 @@ export const deleteChat = async (req: Request, res: Response) => {
 
         const chat = await prisma.chat.findUnique({
             where: { id },
+            include: { messages: true },
         });
 
         if (!chat) {
@@ -241,6 +242,25 @@ export const deleteChat = async (req: Request, res: Response) => {
 
         if (chat.userId !== userId) {
             return res.status(403).json({ message: 'Forbidden' });
+        }
+
+        // Delete images from Cloudinary
+        const imageUrls = chat.messages.map((msg) => msg.image).filter((url): url is string => !!url);
+
+        for (const url of imageUrls) {
+            try {
+                // Extract public_id from Cloudinary URL
+                // Example: https://res.cloudinary.com/demo/image/upload/v12345678/skinsight/chats/abc.jpg
+                const parts = url.split('/');
+                const folderIndex = parts.indexOf('skinsight');
+                if (folderIndex !== -1) {
+                    const publicIdWithExtension = parts.slice(folderIndex).join('/');
+                    const publicId = publicIdWithExtension.split('.')[0];
+                    await cloudinary.uploader.destroy(publicId);
+                }
+            } catch (err) {
+                console.error('Failed to delete image from Cloudinary:', url, err);
+            }
         }
 
         await prisma.chat.delete({

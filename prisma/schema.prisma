@@ -55,6 +55,19 @@ model Disease {
     drugDiseases DiseaseDrug[]
 }
 
+model Drug {
+    id        String   @id @default(auto()) @map("_id") @db.ObjectId
+    name      String
+    slug      String   @unique
+    image     String?
+    content   String // markdown
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    drugDiseases DiseaseDrug[]
+}
+
+
 model GeminiApiKey {
     id        String   @id @default(auto()) @map("_id") @db.ObjectId
     key       String   @unique
@@ -84,16 +97,4 @@ model Message {
     createdAt DateTime @default(now())
 
     chat Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
-}
-
-model Drug {
-    id        String   @id @default(auto()) @map("_id") @db.ObjectId
-    name      String
-    slug      String   @unique
-    image     String?
-    content   String // markdown
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
-    drugDiseases DiseaseDrug[]
 }

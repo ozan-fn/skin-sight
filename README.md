@@ -10,7 +10,7 @@ SkinSight adalah aplikasi web deteksi kondisi kulit berbasis gambar dan chat AI.
 1. Clone repository
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/ozan-fn/skin-sight
 cd skin-sight
 ```
 

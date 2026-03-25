@@ -10,6 +10,7 @@
         "server": "tsx --watch api/main.ts"
     },
     "dependencies": {
+        "@dr.pogodin/react-helmet": "^3.1.1",
         "@google/generative-ai": "^0.24.1",
         "@prisma/client": "6.19",
         "@rsbuild/plugin-babel": "^1.1.1",

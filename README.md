@@ -1,5 +1,10 @@
 # SkinSight
 
+## Link yang udah di deploy
+https://skinsight.web.id
+
+---
+
 Ringkasan singkat:
 SkinSight adalah aplikasi web deteksi kondisi kulit berbasis gambar dan chat AI. Repo ini berisi frontend React (shadcn + Tailwind), backend Express + Prisma (MongoDB), integrasi Cloudinary untuk penyimpanan gambar, dan panggilan model generatif (Gemini/Google Generative AI).
 

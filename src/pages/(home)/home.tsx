@@ -13,7 +13,7 @@ export default function Home() {
 
     const stats = [
         { label: 'Akurasi AI', value: '98.5%', description: 'Teruji secara klinis' },
-        { label: 'Waktu Analisis', value: '1.2s', description: 'Hasil instan & real-time' },
+        { label: 'Waktu Analisis', value: '<15 detik', description: 'Hasil instan & real-time' },
         { label: 'Penyakit Tercover', value: '50+', description: 'Kondisi kulit umum' },
         { label: 'Pengguna Aktif', value: '10k+', description: 'Komunitas terpercaya' },
     ];
@@ -56,7 +56,7 @@ export default function Home() {
 
                         <h1 className="text-6xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-[0.9] text-foreground">
                             Cek Kulit <br />
-                            <span className="text-primary inline-block transform -skew-x-6 italic">Cuma Sedetik.</span>
+                            <span className="text-primary inline-block transform -skew-x-6 italic">{'<15 detik'}</span>
                         </h1>
 
                         <p className="text-xl text-muted-foreground max-w-xl leading-relaxed font-medium">
@@ -114,7 +114,7 @@ export default function Home() {
                                 <div className="p-8 flex-1 flex flex-col gap-8">
                                     <div className="relative flex-1 rounded-3xl border-2 border-dashed border-primary/20 bg-primary/5 flex items-center justify-center overflow-hidden">
                                         <motion.div animate={{ top: ['0%', '100%', '0%'] }} transition={{ duration: 4, repeat: Infinity, ease: 'linear' }} className="absolute left-0 right-0 h-1 bg-primary shadow-[0_0_30px_2px_rgba(var(--primary),0.8)] z-20" />
-                                        <Microscope className="size-32 text-primary/10" />
+                                        <img src="/Penyakit-Kulit-Psoriasis.jpg" alt="Psoriasis example" className="object-cover w-full h-full" />
                                     </div>
 
                                     <div className="grid grid-cols-2 gap-4">
@@ -213,7 +213,7 @@ export default function Home() {
                     </div>
 
                     <Tabs defaultValue="ai" className="w-full">
-                        <TabsList className="h-16 bg-background border p-2 rounded-[24px] gap-2 mb-12">
+                        <TabsList className="h-14! bg-background border p-2 rounded-[24px] gap-2 mb-12">
                             <TabsTrigger value="ai" className="rounded-[18px] px-8 font-bold data-[state=active]:bg-primary data-[state=active]:text-white transition-all">
                                 AI Detection
                             </TabsTrigger>
@@ -227,7 +227,7 @@ export default function Home() {
 
                         <div className="mt-12">
                             <TabsContent value="ai">
-                                <Card className="border-none shadow-2xl rounded-[40px] overflow-hidden bg-background">
+                                <Card className="border-none shadow-2xl rounded-[40px] overflow-hidden bg-background min-h-[520px]">
                                     <div className="grid lg:grid-cols-2 items-center">
                                         <div className="p-12 text-left space-y-6">
                                             <div className="size-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
@@ -236,7 +236,7 @@ export default function Home() {
                                             <h3 className="text-3xl font-black">AI Diagnosis Support</h3>
                                             <p className="text-lg text-muted-foreground leading-relaxed">Model kami dilatih menggunakan dataset dermatologi terbesar untuk memberikan probabilitas kondisi kulit yang paling akurat.</p>
                                             <ul className="space-y-4 pt-4">
-                                                {['Pemindaian Cepat < 2 Detik', 'Akurasi Mendekati Dokter Ahli', 'Privasi Data Foto Terjamin'].map((item) => (
+                                                {['Pemindaian Cepat <15 detik', 'Akurasi Mendekati Dokter Ahli', 'Privasi Data Foto Terjamin'].map((item) => (
                                                     <li key={item} className="flex items-center gap-3 font-bold">
                                                         <CheckCircle2 className="size-5 text-emerald-500" />
                                                         {item}
@@ -244,7 +244,7 @@ export default function Home() {
                                                 ))}
                                             </ul>
                                         </div>
-                                        <div className="h-[400px] bg-primary/5 relative overflow-hidden group">
+                                        <div className="h-[520px] bg-primary/5 relative overflow-hidden group">
                                             <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=2070" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="medical" />
                                             <div className="absolute inset-0 bg-primary/10" />
                                         </div>
@@ -252,9 +252,9 @@ export default function Home() {
                                 </Card>
                             </TabsContent>
                             <TabsContent value="chat">
-                                <Card className="border-none shadow-2xl rounded-[40px] overflow-hidden bg-background">
+                                <Card className="border-none shadow-2xl rounded-[40px] overflow-hidden bg-background min-h-[520px]">
                                     <div className="grid lg:grid-cols-2 items-center">
-                                        <div className="h-[400px] bg-primary/5 relative overflow-hidden group order-2 lg:order-1">
+                                        <div className="h-[520px] bg-primary/5 relative overflow-hidden group order-2 lg:order-1">
                                             <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=2070" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="chat" />
                                             <div className="absolute inset-0 bg-primary/10" />
                                         </div>
@@ -275,12 +275,21 @@ export default function Home() {
                             <TabsContent value="wiki">
                                 <div className="grid md:grid-cols-3 gap-6">
                                     {[1, 2, 3].map((i) => (
-                                        <Card key={i} className="p-8 rounded-[32px] border-none shadow-xl hover:-translate-y-2 transition-transform cursor-pointer">
-                                            <div className="size-12 rounded-xl bg-primary/5 text-primary flex items-center justify-center mb-6">
-                                                <BookOpenIcon className="size-6" />
+                                        <Card key={i} className="p-6 rounded-[24px] border-none shadow-xl hover:-translate-y-2 transition-transform cursor-pointer flex flex-col justify-between min-h-[320px]">
+                                            <div>
+                                                <div className="size-12 rounded-xl bg-primary/5 text-primary flex items-center justify-center mb-4">
+                                                    <BookOpenIcon className="size-6" />
+                                                </div>
+                                                <h4 className="text-lg md:text-xl font-black mb-2">Psoriasis Vulgaris</h4>
+                                                <p className="text-sm text-muted-foreground leading-snug max-h-[5.2rem] overflow-hidden">Penjelasan mendalam mengenai gejala, penyebab, dan penanganan medis untuk kondisi psoriasis.</p>
                                             </div>
-                                            <h4 className="text-xl font-black mb-4">Psoriasis Vulgaris</h4>
-                                            <p className="text-sm text-muted-foreground leading-relaxed">Penjelasan mendalam mengenai gejala, penyebab, dan penanganan medis untuk kondisi psoriasis.</p>
+
+                                            <div className="pt-4">
+                                                <Button variant="ghost" className="px-0 text-primary font-bold">
+                                                    Read more
+                                                    <ChevronRight className="size-4 ml-2 inline-block" />
+                                                </Button>
+                                            </div>
                                         </Card>
                                     ))}
                                 </div>
@@ -292,43 +301,43 @@ export default function Home() {
 
             {/* --- CALL TO ACTION --- */}
             <section className="py-32 px-4 relative overflow-hidden">
-                <div className="max-w-7xl mx-auto rounded-[60px] bg-zinc-950 p-12 md:p-24 flex flex-col items-center text-center space-y-10 relative overflow-hidden shadow-2xl">
+                <div className="max-w-7xl mx-auto rounded-[60px] bg-white dark:bg-zinc-950 p-12 md:p-24 flex flex-col items-center text-center space-y-10 relative overflow-hidden shadow-2xl border border-zinc-200 dark:border-zinc-800">
                     <div className="absolute top-0 right-0 size-96 bg-primary/20 blur-[100px] rounded-full -translate-y-1/2 translate-x-1/2" />
                     <div className="absolute bottom-0 left-0 size-96 bg-primary/10 blur-[100px] rounded-full translate-y-1/2 -translate-x-1/2" />
 
                     <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} className="space-y-6 relative z-10">
-                        <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter leading-tight">
-                            Sayangi Kulit Anda, <br /> Mulai <span className="text-primary italic underline underline-offset-8 decoration-white/20">Cek Hari Ini.</span>
+                        <h2 className="text-5xl md:text-7xl font-black text-zinc-900 dark:text-white tracking-tighter leading-tight">
+                            Sayangi Kulit Anda, <br /> Mulai <span className="text-primary italic underline underline-offset-8 decoration-primary/20 dark:decoration-white/20">Cek Hari Ini.</span>
                         </h2>
-                        <p className="text-xl text-zinc-400 max-w-2xl mx-auto leading-relaxed">Jangan biarkan gejala kecil menjadi masalah besar. Gunakan SkinSight AI untuk pemantauan kesehatan kulit yang lebih baik.</p>
+                        <p className="text-xl text-zinc-700 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed">Jangan biarkan gejala kecil menjadi masalah besar. Gunakan SkinSight AI untuk pemantauan kesehatan kulit yang lebih baik.</p>
                     </motion.div>
 
                     <div className="flex flex-col sm:flex-row gap-6 relative z-10 w-full justify-center">
-                        <Button onClick={() => navigate('/deteksi')} className="h-20 px-12 rounded-[24px] bg-primary text-white text-xl font-black hover:scale-105 active:scale-95 transition-all shadow-[0_20px_50px_-10px_rgba(var(--primary),0.5)]">
+                        <Button onClick={() => navigate('/deteksi')} className="h-20 px-12 rounded-[24px] bg-primary text-white dark:text-white text-xl font-black hover:scale-105 active:scale-95 transition-all shadow-[0_20px_50px_-10px_rgba(var(--primary),0.5)]">
                             Mulai Deteksi Sekarang
                         </Button>
-                        <Button variant="outline" className="h-20 px-12 rounded-[24px] border-zinc-800 text-white text-xl font-black hover:bg-zinc-900 transition-all">
-                            Gabung Komunitas
+                        <Button variant="outline" onClick={() => navigate('/ensiklopedia')} className="h-20 px-12 rounded-[24px] border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-white text-xl font-black hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-all">
+                            Ensiklopedia
                         </Button>
                     </div>
 
-                    <div className="flex items-center gap-8 pt-10 text-zinc-500 relative z-10 grayscale opacity-50">
+                    <div className="flex items-center gap-8 pt-10 text-zinc-600 dark:text-zinc-400 relative z-10 opacity-90">
                         <div className="flex items-center gap-2">
-                            <Lock className="size-5" /> <span>Secure</span>
+                            <Lock className="size-5" /> <span className="text-zinc-600 dark:text-zinc-400">Secure</span>
                         </div>
 
                         <div className="flex items-center gap-2">
-                            <ShieldCheck className="size-5" /> <span>Private</span>
+                            <ShieldCheck className="size-5" /> <span className="text-zinc-600 dark:text-zinc-400">Private</span>
                         </div>
                         <div className="flex items-center gap-2">
-                            <Star className="size-5" /> <span>Verified</span>
+                            <Star className="size-5" /> <span className="text-zinc-600 dark:text-zinc-400">Verified</span>
                         </div>
                     </div>
                 </div>
             </section>
 
             {/* --- FAQ SECTION --- */}
-            <section className="py-32 border-t bg-muted/10">
+            <section className="py-24 border-t bg-muted/10">
                 <div className="max-w-4xl mx-auto px-4">
                     <div className="text-center mb-20 space-y-4">
                         <Badge variant="outline" className="px-4 py-1 rounded-full text-primary border-primary/20 uppercase font-black text-[10px] tracking-widest">
@@ -381,35 +390,70 @@ export default function Home() {
                             </div>
                             <p className="text-lg leading-relaxed font-medium">Melindungi masa depan kesehatan kulit Anda melalui inovasi Kecerdasan Buatan tercanggih.</p>
                             <div className="flex gap-4">
-                                {[Instagram, Twitter, Facebook].map((Icon, i) => (
-                                    <Button key={i} variant="ghost" size="icon" className="size-12 rounded-2xl bg-zinc-900 border border-zinc-800 hover:bg-primary hover:text-white transition-all">
-                                        <Icon className="size-6" />
-                                    </Button>
-                                ))}
+                                <Button variant="ghost" size="icon" aria-label="Instagram" onClick={() => window.open('https://instagram.com/skinsight', '_blank', 'noopener,noreferrer')} className="size-12 rounded-2xl bg-zinc-900 border border-zinc-800 hover:bg-primary hover:text-white transition-all">
+                                    <Instagram className="size-6" />
+                                </Button>
+                                <Button variant="ghost" size="icon" aria-label="Twitter" onClick={() => window.open('https://twitter.com/skinsight', '_blank', 'noopener,noreferrer')} className="size-12 rounded-2xl bg-zinc-900 border border-zinc-800 hover:bg-primary hover:text-white transition-all">
+                                    <Twitter className="size-6" />
+                                </Button>
+                                <Button variant="ghost" size="icon" aria-label="Facebook" onClick={() => window.open('https://facebook.com/skinsight', '_blank', 'noopener,noreferrer')} className="size-12 rounded-2xl bg-zinc-900 border border-zinc-800 hover:bg-primary hover:text-white transition-all">
+                                    <Facebook className="size-6" />
+                                </Button>
                             </div>
                         </div>
 
                         <div className="space-y-8">
                             <h4 className="font-black text-sm uppercase tracking-[0.2em] text-white">Layanan</h4>
                             <ul className="space-y-4 font-bold">
-                                {['Analisis AI', 'Ensiklopedia Kulit', 'Chatbot Medis', 'Dashboard Kesehatan'].map((item) => (
-                                    <li key={item} className="hover:text-primary transition-colors cursor-pointer flex items-center gap-2 group">
-                                        <ChevronRight className="size-4 opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0" />
-                                        {item}
-                                    </li>
-                                ))}
+                                <li className="flex items-center gap-2">
+                                    <ChevronRight className="size-4 text-zinc-500" />
+                                    <button onClick={() => navigate('/deteksi')} className="hover:text-primary transition-colors text-left w-full" aria-label="Analisis AI">
+                                        Analisis AI
+                                    </button>
+                                </li>
+                                <li className="flex items-center gap-2">
+                                    <ChevronRight className="size-4 text-zinc-500" />
+                                    <button onClick={() => navigate('/ensiklopedia')} className="hover:text-primary transition-colors text-left w-full" aria-label="Ensiklopedia Kulit">
+                                        Ensiklopedia Kulit
+                                    </button>
+                                </li>
+                                <li className="flex items-center gap-2">
+                                    <ChevronRight className="size-4 text-zinc-500" />
+                                    <button onClick={() => navigate('/deteksi-chat')} className="hover:text-primary transition-colors text-left w-full" aria-label="Chatbot Medis">
+                                        Chatbot Medis
+                                    </button>
+                                </li>
+                                <li className="flex items-center gap-2">
+                                    <ChevronRight className="size-4 text-zinc-500" />
+                                    <button onClick={() => navigate('/profile')} className="hover:text-primary transition-colors text-left w-full" aria-label="Profil">
+                                        Profil
+                                    </button>
+                                </li>
                             </ul>
                         </div>
 
                         <div className="space-y-8">
                             <h4 className="font-black text-sm uppercase tracking-[0.2em] text-white">Perusahaan</h4>
                             <ul className="space-y-4 font-bold">
-                                {['Tentang Kami', 'Kebijakan Privasi', 'Disclaimer Medis', 'Karir'].map((item) => (
-                                    <li key={item} className="hover:text-primary transition-colors cursor-pointer flex items-center gap-2 group">
-                                        <ChevronRight className="size-4 opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0" />
-                                        {item}
-                                    </li>
-                                ))}
+                                <li className="flex items-center gap-2">
+                                    <ChevronRight className="size-4 text-zinc-500" />
+                                    <button onClick={() => navigate('/tentang-kami')} className="hover:text-primary transition-colors text-left w-full" aria-label="Tentang Kami">
+                                        Tentang Kami
+                                    </button>
+                                </li>
+                                <li className="flex items-center gap-2">
+                                    <ChevronRight className="size-4 text-zinc-500" />
+                                    <button onClick={() => navigate('/docs')} className="hover:text-primary transition-colors text-left w-full" aria-label="Kebijakan Privasi">
+                                        Kebijakan Privasi
+                                    </button>
+                                </li>
+                                <li className="flex items-center gap-2">
+                                    <ChevronRight className="size-4 text-zinc-500" />
+                                    <button onClick={() => navigate('/docs')} className="hover:text-primary transition-colors text-left w-full" aria-label="Disclaimer Medis">
+                                        Disclaimer Medis
+                                    </button>
+                                </li>
+                                {/* 'Karir' removed — halaman tidak tersedia */}
                             </ul>
                         </div>
 

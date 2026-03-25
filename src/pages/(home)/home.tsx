@@ -213,29 +213,32 @@ export default function Home() {
                     </div>
 
                     <Tabs defaultValue="ai" className="w-full">
-                        <TabsList className="h-14! bg-background border p-2 rounded-[24px] gap-2 mb-12">
-                            <TabsTrigger value="ai" className="rounded-[18px] px-8 font-bold data-[state=active]:bg-primary data-[state=active]:text-white transition-all">
-                                AI Detection
-                            </TabsTrigger>
-                            <TabsTrigger value="chat" className="rounded-[18px] px-8 font-bold data-[state=active]:bg-primary data-[state=active]:text-white transition-all">
-                                Smart Chat
-                            </TabsTrigger>
-                            <TabsTrigger value="wiki" className="rounded-[18px] px-8 font-bold data-[state=active]:bg-primary data-[state=active]:text-white transition-all">
-                                Encyclopedia
-                            </TabsTrigger>
-                        </TabsList>
+                        {/* horizontally scrollable on small screens, force height with important (!) modifier */}
+                        <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0">
+                            <TabsList className="flex gap-3 whitespace-nowrap bg-background border p-2 rounded-[24px] mb-6 md:mb-12 h-14!">
+                                <TabsTrigger value="ai" className="inline-flex whitespace-nowrap rounded-[18px] min-w-[140px] px-4 md:px-8 py-2 font-bold data-[state=active]:bg-primary data-[state=active]:text-white transition-all">
+                                    AI Detection
+                                </TabsTrigger>
+                                <TabsTrigger value="chat" className="inline-flex whitespace-nowrap rounded-[18px] min-w-[140px] px-4 md:px-8 py-2 font-bold data-[state=active]:bg-primary data-[state=active]:text-white transition-all">
+                                    Smart Chat
+                                </TabsTrigger>
+                                <TabsTrigger value="wiki" className="inline-flex whitespace-nowrap rounded-[18px] min-w-[140px] px-4 md:px-8 py-2 font-bold data-[state=active]:bg-primary data-[state=active]:text-white transition-all">
+                                    Encyclopedia
+                                </TabsTrigger>
+                            </TabsList>
+                        </div>
 
                         <div className="mt-12">
                             <TabsContent value="ai">
-                                <Card className="border-none shadow-2xl rounded-[40px] overflow-hidden bg-background min-h-[520px]">
-                                    <div className="grid lg:grid-cols-2 items-center">
-                                        <div className="p-12 text-left space-y-6">
+                                <Card className="border-none shadow-2xl rounded-[40px] overflow-hidden bg-background min-h-[320px] md:min-h-[480px] lg:min-h-[520px]">
+                                    <div className="grid grid-cols-1 lg:grid-cols-2 items-center">
+                                        <div className="p-8 md:p-12 text-left space-y-6">
                                             <div className="size-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
                                                 <ScanSearch className="size-8" />
                                             </div>
-                                            <h3 className="text-3xl font-black">AI Diagnosis Support</h3>
-                                            <p className="text-lg text-muted-foreground leading-relaxed">Model kami dilatih menggunakan dataset dermatologi terbesar untuk memberikan probabilitas kondisi kulit yang paling akurat.</p>
-                                            <ul className="space-y-4 pt-4">
+                                            <h3 className="text-2xl md:text-3xl font-black">AI Diagnosis Support</h3>
+                                            <p className="text-base md:text-lg text-muted-foreground leading-relaxed">Model kami dilatih menggunakan dataset dermatologi terbesar untuk memberikan probabilitas kondisi kulit yang paling akurat.</p>
+                                            <ul className="space-y-3 pt-3 md:pt-4">
                                                 {['Pemindaian Cepat <15 detik', 'Akurasi Mendekati Dokter Ahli', 'Privasi Data Foto Terjamin'].map((item) => (
                                                     <li key={item} className="flex items-center gap-3 font-bold">
                                                         <CheckCircle2 className="size-5 text-emerald-500" />
@@ -244,27 +247,27 @@ export default function Home() {
                                                 ))}
                                             </ul>
                                         </div>
-                                        <div className="h-[520px] bg-primary/5 relative overflow-hidden group">
-                                            <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=2070" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="medical" />
+                                        <div className="h-[320px] md:h-[420px] lg:h-[520px] bg-primary/5 relative overflow-hidden group">
+                                            <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=2070" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="medical" />
                                             <div className="absolute inset-0 bg-primary/10" />
                                         </div>
                                     </div>
                                 </Card>
                             </TabsContent>
                             <TabsContent value="chat">
-                                <Card className="border-none shadow-2xl rounded-[40px] overflow-hidden bg-background min-h-[520px]">
-                                    <div className="grid lg:grid-cols-2 items-center">
-                                        <div className="h-[520px] bg-primary/5 relative overflow-hidden group order-2 lg:order-1">
-                                            <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=2070" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="chat" />
+                                <Card className="border-none shadow-2xl rounded-[40px] overflow-hidden bg-background min-h-[320px] md:min-h-[480px] lg:min-h-[520px]">
+                                    <div className="grid grid-cols-1 lg:grid-cols-2 items-center">
+                                        <div className="h-[320px] md:h-[420px] lg:h-[520px] bg-primary/5 relative overflow-hidden group order-2 lg:order-1">
+                                            <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=2070" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="chat" />
                                             <div className="absolute inset-0 bg-primary/10" />
                                         </div>
-                                        <div className="p-12 text-left space-y-6 order-1 lg:order-2">
+                                        <div className="p-8 md:p-12 text-left space-y-6 order-1 lg:order-2">
                                             <div className="size-16 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-600">
                                                 <MessageSquare className="size-8" />
                                             </div>
-                                            <h3 className="text-3xl font-black">AI Chatbot Consultant</h3>
-                                            <p className="text-lg text-muted-foreground leading-relaxed">Tanyakan apapun mengenai kondisi kulit Anda. AI kami dapat membantu menjelaskan istilah medis yang rumit.</p>
-                                            <Button onClick={() => navigate('/deteksi')} className="rounded-2xl h-14 px-8 font-bold gap-2">
+                                            <h3 className="text-2xl md:text-3xl font-black">AI Chatbot Consultant</h3>
+                                            <p className="text-base md:text-lg text-muted-foreground leading-relaxed">Tanyakan apapun mengenai kondisi kulit Anda. AI kami dapat membantu menjelaskan istilah medis yang rumit.</p>
+                                            <Button onClick={() => navigate('/deteksi')} className="rounded-2xl h-12 md:h-14 px-6 md:px-8 font-bold gap-2">
                                                 Coba Chat Sekarang
                                                 <ArrowUpRight className="size-5" />
                                             </Button>

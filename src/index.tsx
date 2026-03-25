@@ -8,6 +8,12 @@ import './styles.css';
 import { TooltipProvider } from './components/ui/tooltip';
 import { ScrollToTop } from './components/utils/scroll-to-top';
 
+// Set a default document title for the app
+// Ensures the site title is "SkinSight" instead of any build-tool defaults
+if (typeof document !== 'undefined' && !document.title) {
+    document.title = 'SkinSight';
+}
+
 const rootEl = document.getElementById('root');
 if (rootEl) {
     const root = ReactDOM.createRoot(rootEl);

@@ -1,12 +1,19 @@
-# SkinSight
+# Judul Karya
+Skin Sight
 
-## Link yang udah di deploy
+## Institusi
+Universitas Amikom Purwokerto
+
+## Nama Anggota
+- Ketua : Noval Esa Ramdany
+- Anggota 1 : Akhmad Fauzan
+- Anggota 2 : Muhammad Zhiya Ulhaq
+
+## Deskripsi Karya 
+SkinSight adalah aplikasi web analisa kondisi kulit berbasis gambar dan chat AI. Repo ini berisi frontend React (shadcn + Tailwind), backend Express + Prisma (MongoDB), integrasi Cloudinary untuk penyimpanan gambar, dan panggilan model generatif (Gemini/Google Generative AI).
+
+## Link website
 https://skinsight.web.id
-
----
-
-Ringkasan singkat:
-SkinSight adalah aplikasi web deteksi kondisi kulit berbasis gambar dan chat AI. Repo ini berisi frontend React (shadcn + Tailwind), backend Express + Prisma (MongoDB), integrasi Cloudinary untuk penyimpanan gambar, dan panggilan model generatif (Gemini/Google Generative AI).
 
 ---
 
